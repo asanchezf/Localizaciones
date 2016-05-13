@@ -1,6 +1,7 @@
 package com.antonioejemplo.localizaciones;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -53,6 +54,8 @@ public class Login extends AppCompatActivity  {
     @Bind(R.id.txtPassword) EditText txtPassword;
     @Bind(R.id.txtEmail) EditText txtEmail;
 
+    private static long back_pressed;//Contador para cerrar la app al pulsar dos veces seguidas el btón de cerrar. Se gestiona en el evento onBackPressed
+
     /*private Button btnLogin,btnRegistrarse;
     private EditText txtNombre,txtPassword;*/
 
@@ -62,6 +65,8 @@ public class Login extends AppCompatActivity  {
         setContentView(R.layout.activity_login);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         /*btnLogin=(Button)findViewById(R.id.btnLogin);
         btnRegistrarse=(Button)findViewById(R.id.btnRegistrarse);
@@ -89,6 +94,8 @@ public class Login extends AppCompatActivity  {
 
     private void registerUser(){
 
+
+
         //EL USUARIO NO EXISTÍA EN LA BBDD DE LA APP Y SE REGISTRA.
         String tag_json_obj_actual = "json_obj_req_actual";
         final String username = txtNombre.getText().toString().trim();
@@ -99,7 +106,7 @@ public class Login extends AppCompatActivity  {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Toast.makeText(Login.this,response+"Vuelve a logarte para utilizar la aplicación",Toast.LENGTH_LONG).show();
+                        Toast.makeText(Login.this,response+"Y estás dado de alta en la aplicación. Ahora puedes logarte para utilizarla",Toast.LENGTH_LONG).show();
 
                     }
                 },
@@ -129,6 +136,36 @@ public class Login extends AppCompatActivity  {
         limpiarDatos();
     }
 
+    private boolean validarEntrada(String tipo) {
+
+        final String username = txtNombre.getText().toString().trim();
+        final String password = txtPassword.getText().toString().trim();
+        final String email = txtEmail.getText().toString().trim();
+
+        if(tipo.equals("registro")){
+            if(username.isEmpty()||password.isEmpty()||email.isEmpty()){
+
+                Toast.makeText(getApplicationContext(),"Para logarte debes rellenar los campos nombre, email y contraseña",Toast.LENGTH_LONG).show();
+                return false;
+            }
+
+
+        }else if (tipo.equals("login")){
+
+            if(username.isEmpty()||password.isEmpty()){
+
+                Toast.makeText(getApplicationContext(),"Para registrarte en la aplicación debes rellenar los campos nombre y contraseña",Toast.LENGTH_LONG).show();
+                return false;
+            }
+
+        }
+
+
+
+        return true;
+
+    }
+
     private void userLogin() {
 
         //EL USUARIO SE LOGA PARA ENTRAR EN LA APLICACIÓN
@@ -146,7 +183,7 @@ public class Login extends AppCompatActivity  {
                     public void onResponse(String response) {
                         if(response.trim().equals("success")){
                             //Validación correcta... abrimos mapas pasáncole el nombre de usuario introducido y validado
-                            Toast.makeText(Login.this,"Usuario correcto",Toast.LENGTH_LONG).show();
+                            //Toast.makeText(Login.this,"Usuario correcto",Toast.LENGTH_LONG).show();
 
                             //
                             Intent intentMapas=new Intent(Login.this,MapsActivity.class);
@@ -158,7 +195,7 @@ public class Login extends AppCompatActivity  {
 
                         }else{
                             //El usuario no existe... Le informamos
-                            Toast.makeText(Login.this,"El usuario no existe en la aplicación. Puedes registrarte",Toast.LENGTH_LONG).show();
+                            Toast.makeText(Login.this,"El usuario no existe en la aplicación. Debes registrarte para poder utilizarla.",Toast.LENGTH_LONG).show();
                         }
                     }
                 },
@@ -283,8 +320,8 @@ public class Login extends AppCompatActivity  {
 
         @Override
         protected void onPostExecute(String devuelve) {
-            //super.onPostExecute(s);
-
+            super.onPostExecute(devuelve);
+            limpiarDatos();
             Toast.makeText(getApplicationContext(),devuelve,Toast.LENGTH_LONG).show();
         }
     }
@@ -296,17 +333,35 @@ public class Login extends AppCompatActivity  {
         /*Intent intent=new Intent(Login.this,MapsActivity.class);
         startActivity(intent);*/
         //registerUser();//Utilizando Volley
-        enviaDatosAlServidor();//Utilizando un AsyncTacks
+
+     if (validarEntrada("registro")) {
+         enviaDatosAlServidor();//Utilizando un AsyncTacks
+     }
     }
 
 
     @OnClick(R.id.btnLogin)
     public void btnLogin(){
 
-        /*Intent intent=new Intent(Login.this,MapsActivity.class);
-        startActivity(intent);*/
+      if(validarEntrada("login")) {
 
-        userLogin();
+          userLogin();
+      }
+    }
+
+
+    @Override
+    public void onBackPressed() {
+/**
+ * Cierra la app cuando se ha pulsado dos veces seguidas en un intervalo inferior a dos segundos.
+ */
+
+        if (back_pressed + 2000 > System.currentTimeMillis())
+            super.onBackPressed();
+        else
+            Toast.makeText(getBaseContext(), R.string.eltiempo_salir, Toast.LENGTH_SHORT).show();
+        back_pressed = System.currentTimeMillis();
+        // super.onBackPressed();
     }
 
     /*@Override

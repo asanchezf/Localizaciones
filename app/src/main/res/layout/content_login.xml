@@ -7,43 +7,70 @@
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.antonioejemplo.localizaciones.Login"
-    tools:showIn="@layout/activity_login">
+    tools:showIn="@layout/activity_login"
+    android:background="@android:color/background_dark">
 
 
 
 
     <EditText
         android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_gravity="center"
+        android:textAlignment="center"
+        android:textStyle="italic"
+        android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionMode.Title.Inverse"
         android:hint="Introduce el nombre"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="320dp"
+        android:layout_height="60dp"
+        android:background="@color/md_blue_grey_900"
         android:id="@+id/txtNombre" />
 
 
     <EditText
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_gravity="center"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionMode.Title.Inverse"
+        android:textStyle="italic"
         android:hint="Introduce la password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="320dp"
+        android:layout_height="60dp"
+        android:background="@color/md_blue_grey_900"
         android:id="@+id/txtPassword" />
 
     <EditText
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_gravity="center"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionMode.Title.Inverse"
+        android:textStyle="italic"
         android:hint="Introduce tu email"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="320dp"
+        android:layout_height="60dp"
+        android:background="@color/md_blue_grey_900"
         android:id="@+id/txtEmail" />
 
     <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Entrar"
-        android:id="@+id/btnLogin" />
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_gravity="center"
+        android:layout_width="320dp"
+        android:layout_height="70dp"
+        android:text="REGISTRARSE"
+        android:textSize="20sp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Button"
+        android:background="@color/colorAccent"
+        android:id="@+id/btnRegistrarse" />
 
 
     <Button
+        android:layout_marginTop="50dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Registrarse"
-        android:id="@+id/btnRegistrarse" />
+        android:text="Si ya estás registrado... Inicia sesión!"
+        android:background="@android:color/background_dark"
+        android:id="@+id/btnLogin" />
+
+
 
 
 </LinearLayout>

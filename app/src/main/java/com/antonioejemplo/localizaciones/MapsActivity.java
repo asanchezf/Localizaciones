@@ -61,8 +61,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     //=========
 
-    private static final long TIEMPO_MIN = 60 * 1000; // 60 segundos
-    private static final long DISTANCIA_MIN = 100; // 100 metros
+    private static final long TIEMPO_MIN = 30 * 1000; // 60 segundos
+    private static final long DISTANCIA_MIN = 10; // 10 metros
     private static final String[] A = {"n/d", "preciso", "impreciso"};
     private static final String[] P = {"n/d", "bajo", "medio", "alto"};
     private static final String[] E = {"fuera de servicio",
@@ -143,21 +143,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Toast.makeText(getApplicationContext(),"Me alegro de verte... "+usuarioMapas,Toast.LENGTH_SHORT).show();
 
 
-
-
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
-
-
 
     }
 
 
     private void traerMarcadoresWebService() {
         //PETICIÓN PARA TRAER LOS MARCADORES DE TODOS LOS USUARIOS DEL WEBSERVICES:
+
         String tag_json_obj_actual = "json_obj_req_actual";
 
         //String ciudad = txtciudad.getText().toString();
@@ -168,7 +164,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         Log.v(LOGTAG, "Ha llegado a immediateRequestTiempoActual. Uri: " + uri);
 
-        myjsonObjectRequest = new MyJsonRequest(//Prioridad
+        myjsonObjectRequest = new MyJSonRequestImmediate(//Prioridad
                 Request.Method.GET,
                 uri,
 
@@ -186,39 +182,59 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                         String fechaHora = "";
 
-                        /*listdatos=new ArrayList<Modelo>();
-                        Modelo modelo = null;*/
-
-
                         try {
 
-
-                            JSONObject json_estado = response2.getJSONObject("estado");
                             for (int i = 0; i < response2.length(); i++) {
-
+                                //JSONObject json_estado = response2.getJSONObject("estado");
+                                String resultJSON = response2.getString("estado");
 
                                 JSONArray json_array = response2.getJSONArray("alumnos");
-                              for (int z = 0; z < json_array.length(); z++) {
-                                  usuario = json_array.getJSONObject(z).getString("Usuario");
-                                  poblacion = json_array.getJSONObject(z).getString("Poblacion");
-                                  calle = json_array.getJSONObject(z).getString("Calle");
-                                  numero = json_array.getJSONObject(z).getString("Numero");
-                                  longitud = json_array.getJSONObject(z).getDouble("Longitud");
-                                  latitud = json_array.getJSONObject(z).getDouble("Latitud");
-                                  velocidad = json_array.getJSONObject(z).getDouble("Velocidad");
-                                  fechaHora = json_array.getJSONObject(z).getString("FechaHora");
+                                for (int z = 0; z < json_array.length(); z++) {
+                                    usuario = json_array.getJSONObject(z).getString("Usuario");
+                                    poblacion = json_array.getJSONObject(z).getString("Poblacion");
+                                    calle = json_array.getJSONObject(z).getString("Calle");
+                                    numero = json_array.getJSONObject(z).getString("Numero");
+                                    longitud = json_array.getJSONObject(z).getDouble("Longitud");
+                                    latitud = json_array.getJSONObject(z).getDouble("Latitud");
+                                    //velocidad = json_array.getJSONObject(z).getDouble("Velocidad");Da error de conversión de datos. Probar...
+                                    fechaHora = json_array.getJSONObject(z).getString("FechaHora");
+
+
+                                    milocalizacion=new LatLng(latitud,longitud);
+
+                                    if(usuario.equals("Antonio")){
+                                        mMap.addMarker(new MarkerOptions()
+                                                .position(milocalizacion)
+                                                .title(usuario)
+                                                .snippet(calle+" "+numero+"-->"+fechaHora)
+                                                .flat(true)//
+
+                                        );
+
+
+                                    }
+
+                                    //mMap.addMarker(new MarkerOptions().position(milocalizacion).title(usuario+" está en "+direccion+" "+calle+" "+numero));
+
+                                    else {
+                                        mMap.addMarker(new MarkerOptions()
+                                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.icono_ruta))
+                                                .anchor(0.0f, 1.0f)
+                                                .title(usuario)
+                                                .snippet(calle+" "+numero+"-->"+fechaHora)
+                                                .position(milocalizacion));
+                                    }
+
+                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(milocalizacion,10));
 
                                 }
 
 
                             }
 
-
-
-
                         } catch (JSONException e) {
                             e.printStackTrace();
-                           // Log.d(LOGTAG, "Error Respuesta en JSON: " + description);
+                            Log.d(LOGTAG, "Error Respuesta en JSON: ");
                         }
 
                         //priority = Request.Priority.IMMEDIATE;
@@ -231,24 +247,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.d(LOGTAG, "Error Respuesta en JSON: " + error.getMessage());
-                        Toast.makeText(context, "ERROR", Toast.LENGTH_SHORT).show();
-
-                        //Snackbar snack = Snackbar.make(getApplicationContext(), R.string.conexionerror, Snackbar.LENGTH_LONG);
-                      /*  Snackbar snack = Snackbar.make(null, R.string.conexionerror, Snackbar.LENGTH_LONG);
-
-                        ViewGroup group = (ViewGroup) snack.getView();
-                        group.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                        snack.show();*/
+                        Toast.makeText(context, "Se ha producido un error conectando al Servidor", Toast.LENGTH_SHORT).show();
 
                     }
                 }
-
-
         ) ;
-
 
         // Añadir petición a la cola
         AppController.getInstance().addToRequestQueue(myjsonObjectRequest, tag_json_obj_actual);
+        /////////////////////////////////////////
+   /*     milocalizacion=new LatLng(latitud,longitud);
+        mMap.addMarker(new MarkerOptions().position(milocalizacion).title(usuario+" está en "+direccion+" "+calle+" "+numero));
+ mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(milocalizacion,15));*/
             }
 
 
@@ -374,7 +384,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         ObtenerWebService hiloconexion = new ObtenerWebService();
         hiloconexion.execute(INSERT);   // Parámetros que recibe doInBackground
 
-
     }
 
     public class ObtenerWebService extends AsyncTask<String,Void,String> {
@@ -490,129 +499,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));*/
 
-         //milocalizacion=new LatLng(latitud,longitud);
+         milocalizacion=new LatLng(latitud,longitud);
        ///////////////////////////////////////////////////////
-        //PETICIÓN PARA TRAER LOS MARCADORES DE TODOS LOS USUARIOS DEL WEBSERVICES:
-
-        String tag_json_obj_actual = "json_obj_req_actual";
-
-        //String ciudad = txtciudad.getText().toString();
-
-        String patronUrl = "http://petty.hol.es/obtener_localizaciones.php";
-        String uri = String.format(patronUrl);
-
-
-        Log.v(LOGTAG, "Ha llegado a immediateRequestTiempoActual. Uri: " + uri);
-
-        myjsonObjectRequest = new MyJsonRequest(//Prioridad
-                Request.Method.GET,
-                uri,
-
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response2) {
-
-                        String usuario = "";
-                        String poblacion = "";
-                        String calle = "";
-                        String numero = "";
-                        Double latitud = null;
-                        Double longitud = null;
-                        Double velocidad = null;
-
-                        String fechaHora = "";
-
-
-
-                        try {
-
-
-
-                            for (int i = 0; i < response2.length(); i++) {
-                                //JSONObject json_estado = response2.getJSONObject("estado");
-                                String resultJSON = response2.getString("estado");
-
-
-                                JSONArray json_array = response2.getJSONArray("alumnos");
-                                for (int z = 0; z < json_array.length(); z++) {
-                                    usuario = json_array.getJSONObject(z).getString("Usuario");
-                                    poblacion = json_array.getJSONObject(z).getString("Poblacion");
-                                    calle = json_array.getJSONObject(z).getString("Calle");
-                                    numero = json_array.getJSONObject(z).getString("Numero");
-                                    longitud = json_array.getJSONObject(z).getDouble("Longitud");
-                                    latitud = json_array.getJSONObject(z).getDouble("Latitud");
-                                    //velocidad = json_array.getJSONObject(z).getDouble("Velocidad");Da error de conversión de datos. Probar...
-                                    fechaHora = json_array.getJSONObject(z).getString("FechaHora");
-
-
-                                    milocalizacion=new LatLng(latitud,longitud);
-
-                                    if(usuario.equals("Antonio")){
-                                        mMap.addMarker(new MarkerOptions()
-                                        .position(milocalizacion)
-                                         .title(usuario+" está en "+calle+" "+numero)
-                                         .snippet(usuarioMapas)
-                                        .flat(true)//
-
-                                        );
-
-
-                                    }
-
-                                    //mMap.addMarker(new MarkerOptions().position(milocalizacion).title(usuario+" está en "+direccion+" "+calle+" "+numero));
-
-                                    else {
-                                        mMap.addMarker(new MarkerOptions()
-                                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.icono_ruta))
-                                                .anchor(0.0f, 1.0f)
-                                                .title(usuario+" está en "+calle+" "+numero)
-                                                .snippet(usuarioMapas)
-                                                .position(milocalizacion));
-                                    }
-
-                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(milocalizacion,10));
-
-                                }
-
-
-                            }
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Log.d(LOGTAG, "Error Respuesta en JSON: ");
-                        }
-
-                        //priority = Request.Priority.IMMEDIATE;
-
-                    }//fin onresponse
-
-                },
-
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d(LOGTAG, "Error Respuesta en JSON: " + error.getMessage());
-                        Toast.makeText(context, "Se ha producido un error conectando al Servidor", Toast.LENGTH_SHORT).show();
-
-                    }
-                }
-        ) ;
-
-        // Añadir petición a la cola
-        AppController.getInstance().addToRequestQueue(myjsonObjectRequest, tag_json_obj_actual);
-        /////////////////////////////////////////
-   /*     milocalizacion=new LatLng(latitud,longitud);
-        mMap.addMarker(new MarkerOptions().position(milocalizacion).title(usuario+" está en "+direccion+" "+calle+" "+numero));
- mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(milocalizacion,15));*/
+        traerMarcadoresWebService();
 
     }
 
 
-    @Override
+    @Override//Cada vez que cambian los parámetros de la localización...
     public void onLocationChanged(Location location) {
         muestraLocaliz(location);
         muestradireccion(location);
         enviaDatosAlServidor();
+        traerMarcadoresWebService();
 
     }
 
