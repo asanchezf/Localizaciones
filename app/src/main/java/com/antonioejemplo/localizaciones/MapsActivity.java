@@ -196,30 +196,50 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     numero = json_array.getJSONObject(z).getString("Numero");
                                     longitud = json_array.getJSONObject(z).getDouble("Longitud");
                                     latitud = json_array.getJSONObject(z).getDouble("Latitud");
-                                    //velocidad = json_array.getJSONObject(z).getDouble("Velocidad");Da error de conversión de datos. Probar...
+
+                                    //Da error de conversión de datos. Probar...
+
+                                    //velocidad = json_array.getJSONObject(z).getDouble("Velocidad");
                                     fechaHora = json_array.getJSONObject(z).getString("FechaHora");
 
 
                                     milocalizacion=new LatLng(latitud,longitud);
 
-                                    if(usuario.equals("Antonio")){
-                                        mMap.addMarker(new MarkerOptions()
-                                                .position(milocalizacion)
-                                                .title(usuario)
-                                                .snippet(calle+" "+numero+"-->"+fechaHora)
-                                                .flat(true)//
+                                    if(usuario.equalsIgnoreCase("Antonio")){
 
-                                        );
-
+                                                mMap.addMarker(new MarkerOptions()
+                                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.icono_situar))
+                                                        .anchor(0.0f, 1.0f)
+                                                        .title(usuario)
+                                                        .snippet(calle+" "+numero+"-->"+fechaHora)
+                                                        .position(milocalizacion));
 
                                     }
 
                                     //mMap.addMarker(new MarkerOptions().position(milocalizacion).title(usuario+" está en "+direccion+" "+calle+" "+numero));
 
-                                    else {
+                                    else if (usuario.equalsIgnoreCase("Susana")){
+                                        mMap.addMarker(new MarkerOptions()
+                                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.icono_situacion))
+                                                .anchor(0.0f, 1.0f)
+                                                .title(usuario)
+                                                .snippet(calle+" "+numero+"-->"+fechaHora)
+                                                .position(milocalizacion));
+                                    }
+
+                                    else if (usuario.equalsIgnoreCase("Dario")){
                                         mMap.addMarker(new MarkerOptions()
                                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.icono_ruta))
                                                 .anchor(0.0f, 1.0f)
+                                                .title(usuario)
+                                                .snippet(calle+" "+numero+"-->"+fechaHora)
+                                                .position(milocalizacion));
+                                    }
+
+                                    else  {
+                                        mMap.addMarker(new MarkerOptions()
+                                                //.icon(BitmapDescriptorFactory.fromResource(R.drawable.icono_ubicacion))//Icono por defecto
+                                                //.anchor(0.0f, 1.0f)
                                                 .title(usuario)
                                                 .snippet(calle+" "+numero+"-->"+fechaHora)
                                                 .position(milocalizacion));
@@ -416,7 +436,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 jsonParam.put("Numero", numero);
                 jsonParam.put("Longitud", longitud);
                 jsonParam.put("Latitud", latitud);
+
                 jsonParam.put("Velocidad", velocidad_dir);
+
+                //jsonParam.put("Velocidad", velocidad);
                 jsonParam.put("FechaHora", Stringfechahora);
                 jsonParam.put("Modificado", modificacion);
                 // Envio los parámetros post.

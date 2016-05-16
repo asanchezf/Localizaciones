@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -106,7 +108,7 @@ public class Login extends AppCompatActivity  {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Toast.makeText(Login.this,response+"Y estás dado de alta en la aplicación. Ahora puedes logarte para utilizarla",Toast.LENGTH_LONG).show();
+                        Toast.makeText(Login.this,response+"Ya estás dado de alta en la aplicación. Ahora puedes logarte para utilizarla",Toast.LENGTH_LONG).show();
 
                     }
                 },
@@ -145,7 +147,14 @@ public class Login extends AppCompatActivity  {
         if(tipo.equals("registro")){
             if(username.isEmpty()||password.isEmpty()||email.isEmpty()){
 
-                Toast.makeText(getApplicationContext(),"Para logarte debes rellenar los campos nombre, email y contraseña",Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(),"Para registrarte debes rellenar los campos nombre, email y contraseña",Toast.LENGTH_LONG).show();
+
+                Snackbar snack = Snackbar.make(btnRegistrarse, R.string.avisoaltausuario, Snackbar.LENGTH_LONG);
+                ViewGroup group = (ViewGroup) snack.getView();
+                group.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                snack.show();
+
+
                 return false;
             }
 
@@ -154,7 +163,13 @@ public class Login extends AppCompatActivity  {
 
             if(username.isEmpty()||password.isEmpty()){
 
-                Toast.makeText(getApplicationContext(),"Para registrarte en la aplicación debes rellenar los campos nombre y contraseña",Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(),"Para logarte en la aplicación debes rellenar los campos nombre y contraseña",Toast.LENGTH_LONG).show();
+
+                Snackbar snack = Snackbar.make(btnRegistrarse, R.string.avisologarseusuario, Snackbar.LENGTH_LONG);
+                ViewGroup group = (ViewGroup) snack.getView();
+                group.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                snack.show();
+
                 return false;
             }
 
@@ -166,7 +181,7 @@ public class Login extends AppCompatActivity  {
 
     }
 
-    private void userLogin() {
+    private void userLogin(final Button btnLogin) {
 
         //EL USUARIO SE LOGA PARA ENTRAR EN LA APLICACIÓN
         final String KEY_USERNAME_VALIDAR = "username";
@@ -186,23 +201,35 @@ public class Login extends AppCompatActivity  {
                             //Toast.makeText(Login.this,"Usuario correcto",Toast.LENGTH_LONG).show();
 
                             //
-                            Intent intentMapas=new Intent(Login.this,MapsActivity.class);
-                            intentMapas.putExtra("USUARIO", username);
+                            /*Intent intentInicio=new Intent(Login.this,Inicio.class);
+                            intentInicio.putExtra("USUARIO", username);*/
+
+                            Intent intentInicio=new Intent(Login.this,MapsActivity.class);
+                            intentInicio.putExtra("USUARIO", username);
                             //intentMapas.putExtra("Email", em);
                             //intentMapas.putExtra("Direccion", direccion);
 
-                            startActivity(intentMapas);
+                            startActivity(intentInicio);
 
                         }else{
                             //El usuario no existe... Le informamos
-                            Toast.makeText(Login.this,"El usuario no existe en la aplicación. Debes registrarte para poder utilizarla.",Toast.LENGTH_LONG).show();
+                            //Toast.makeText(Login.this,"El usuario no existe en la aplicación. Debes registrarte para poder utilizarla.",Toast.LENGTH_LONG).show();
+
+                            Snackbar snack = Snackbar.make(btnLogin, R.string.usuarionoexist, Snackbar.LENGTH_LONG);
+                            ViewGroup group = (ViewGroup) snack.getView();
+                            group.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                            snack.show();
                         }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(Login.this,error.toString(),Toast.LENGTH_LONG ).show();
+                        // Toast.makeText(Login.this,error.toString(),Toast.LENGTH_LONG ).show();
+                        Snackbar snack = Snackbar.make(btnLogin, error.toString(), Snackbar.LENGTH_LONG);
+                        ViewGroup group = (ViewGroup) snack.getView();
+                        group.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                        snack.show();
                     }
                 }){
             @Override
@@ -322,7 +349,12 @@ public class Login extends AppCompatActivity  {
         protected void onPostExecute(String devuelve) {
             super.onPostExecute(devuelve);
             limpiarDatos();
-            Toast.makeText(getApplicationContext(),devuelve,Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext(),devuelve,Toast.LENGTH_LONG).show();
+
+            Snackbar snack = Snackbar.make(btnRegistrarse, devuelve, Snackbar.LENGTH_LONG);
+            ViewGroup group = (ViewGroup) snack.getView();
+            group.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+            snack.show();
         }
     }
 
@@ -335,7 +367,7 @@ public class Login extends AppCompatActivity  {
         //registerUser();//Utilizando Volley
 
      if (validarEntrada("registro")) {
-         enviaDatosAlServidor();//Utilizando un AsyncTacks
+         enviaDatosAlServidor();//Damos de alta el usuario utilizando un AsyncTacks
      }
     }
 
@@ -345,7 +377,9 @@ public class Login extends AppCompatActivity  {
 
       if(validarEntrada("login")) {
 
-          userLogin();
+          userLogin(btnLogin);
+
+
       }
     }
 

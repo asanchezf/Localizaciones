@@ -11,7 +11,7 @@
     android:background="@android:color/background_dark">
 
 
-
+    <!--android:background="@color/md_blue_grey_900"-->
 
     <EditText
         android:layout_marginTop="@dimen/activity_vertical_margin"
@@ -22,7 +22,7 @@
         android:hint="Introduce el nombre"
         android:layout_width="320dp"
         android:layout_height="60dp"
-        android:background="@color/md_blue_grey_900"
+        android:background="@drawable/tunear_edittext"
         android:id="@+id/txtNombre" />
 
 
@@ -35,7 +35,7 @@
         android:hint="Introduce la password"
         android:layout_width="320dp"
         android:layout_height="60dp"
-        android:background="@color/md_blue_grey_900"
+        android:background="@drawable/tunear_edittext"
         android:id="@+id/txtPassword" />
 
     <EditText
@@ -47,27 +47,29 @@
         android:hint="Introduce tu email"
         android:layout_width="320dp"
         android:layout_height="60dp"
-        android:background="@color/md_blue_grey_900"
+        android:background="@drawable/tunear_edittext"
         android:id="@+id/txtEmail" />
 
     <Button
-        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginTop="40dp"
         android:layout_gravity="center"
         android:layout_width="320dp"
         android:layout_height="70dp"
         android:text="REGISTRARSE"
         android:textSize="20sp"
         android:textAppearance="@style/TextAppearance.AppCompat.Button"
-        android:background="@color/colorAccent"
+        android:background="@drawable/tunear_button"
         android:id="@+id/btnRegistrarse" />
 
+    <!--android:background="@android:color/background_dark"-->
 
     <Button
         android:layout_marginTop="50dp"
-        android:layout_width="match_parent"
+        android:layout_gravity="center"
+        android:layout_width="320dp"
         android:layout_height="wrap_content"
-        android:text="Si ya estás registrado... Inicia sesión!"
-        android:background="@android:color/background_dark"
+        android:text="Si Estás registrado...inicia sesión aquí!!!"
+        android:background="@drawable/tunear_edittext"
         android:id="@+id/btnLogin" />
 
 

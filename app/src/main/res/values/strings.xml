@@ -5,5 +5,9 @@
     <string name="title_activity_login">Login</string>
 
     <string name="eltiempo_salir">Pulse otra vez para salir</string>
+    <string name="usuarionoexist">El usuario no existe en la aplicación. Debes registrarte para poder utilizarla></string>
+    <string name="avisoaltausuario">Para registrarte debes rellenar los campos nombre, email y contraseña</string>
+    <string name="avisologarseusuario">Para logarte en la aplicación debes rellenar los campos nombre y contraseña</string>
+    <string name="title_activity_inicio">Inicio</string>
 
 </resources>
