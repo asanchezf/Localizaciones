@@ -1,28 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:context="com.antonioejemplo.localizaciones.Login">
+    android:layout_height="250dp"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.antonioejemplo.localizaciones.Login"
+    tools:showIn="@layout/activity_login"
+    android:background="@color/colorPrimary"
+    >
 
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
+    <!--android:background="@android:color/background_dark"-->
+    <!--android:background="@color/md_blue_grey_900"-->
+
+    <EditText
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center"
+        android:textAlignment="center"
+        android:textColor="#cfd8dc"
+        android:typeface="sans"
+        android:hint="Introduce el nombre"
+        android:layout_width="320dp"
+        android:layout_height="60dp"
+        android:background="@drawable/tunear_edittext"
+        android:id="@+id/txtNombre" />
+
+
+    <EditText
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_gravity="center"
+        android:textAlignment="center"
+        android:textColor="#cfd8dc"
+        android:typeface="sans"
+        android:textStyle="italic"
+        android:hint="Introduce la password"
+        android:layout_width="320dp"
+        android:layout_height="60dp"
+        android:background="@drawable/tunear_edittext"
+        android:id="@+id/txtPassword" />
+
+    <!-- <EditText
+         android:layout_marginTop="@dimen/activity_vertical_margin"
+         android:layout_gravity="center"
+         android:textAlignment="center"
+         android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionMode.Title.Inverse"
+         android:textStyle="italic"
+         android:hint="Introduce tu email"
+         android:layout_width="320dp"
+         android:layout_height="60dp"
+         android:background="@drawable/tunear_edittext"
+         android:id="@+id/txtEmail" />-->
+
+    <Button
+        android:layout_marginTop="25dp"
+        android:layout_gravity="center"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:text="Sing In"
+        android:textSize="20sp"
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@android:color/black"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+        android:id="@+id/btnLogin"
+        android:textColor="#ffffff"
+        android:typeface="sans"
+        android:background="@drawable/colorear_button"/>
 
-    </android.support.design.widget.AppBarLayout>
+    <!--android:background="@android:color/background_dark"-->
 
-    <include layout="@layout/content_login" />
+    <!--<Button
+        android:layout_marginTop="50dp"
+        android:layout_gravity="center"
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:text="Si Estás registrado...inicia sesión aquí!!!"
+        android:background="@drawable/tunear_edittext"
+        android:id="@+id/btnLogin" />-->
 
 
 
-</android.support.design.widget.CoordinatorLayout>
+
+</LinearLayout>
+

@@ -1,10 +1,9 @@
 package com.antonioejemplo.localizaciones;
 
 import android.Manifest;
+import android.app.Fragment;
 import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -14,11 +13,12 @@ import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.view.WindowManager;
-import android.widget.TabHost;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -30,7 +30,6 @@ import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -57,9 +56,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,LocationListener {
+/**
+ * Created by Susana on 16/05/2016.
+ */
+public class FragmentMaps extends Fragment implements OnMapReadyCallback, LocationListener {
 
-    public static final String LOGTAG ="OBTENER MARCADORES" ;
+    public static final String LOGTAG = "OBTENER MARCADORES";
     private GoogleMap mMap;
 
     //=========
@@ -74,11 +76,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static String LOGCAT;
     private LocationManager manejador;
     private String proveedor;
-    private Context context;
+    Context contexto = getActivity();
 
     double longitud;
     double latitud;
-    float velocidad;
+    double velocidad;
     double altitud;
     String direccion;
     String calle;
@@ -97,56 +99,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     String GET = IP + "insertar_localizacion.php";
     private RequestQueue requestQueue;//Cola de peticiones de Volley. se encarga de gestionar automáticamente el envió de las peticiones, la administración de los hilos, la creación de la caché y la publicación de resultados en la UI.
 
-    private JsonObjectRequest myjsonObjectRequest;
+    //private JsonObjectRequest myjsonObjectRequest;
 
     LatLng milocalizacion;
+    private Volley volley;
+    private JsonObjectRequest myjsonObjectRequest;
 
-    //PATRONES DE BÚSQUEDA APLICADOS EN traerMarcadoresWebService DEPENDIENDO DE LA PESTAÑA QUE SE ABRA.
-    private String patron_Busqueda_Url="http://petty.hol.es/obtener_localizaciones.php";
 
-
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_maps);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        ////UTILIZANDO TABS////////////////////////
-        setContentView(R.layout.activity_inicio);
-        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
-
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
-        Resources res = getResources();
-
-        TabHost tabs=(TabHost)findViewById(android.R.id.tabhost);
-
-        tabs.setup();
-
-        TabHost.TabSpec spec=tabs.newTabSpec("mitab1");
-        spec.setContent(R.id.tab1);
-        spec.setIndicator("Últimas posiciones de todos",
-                res.getDrawable(R.drawable.icono_ruta));
-
-        tabs.addTab(spec);
-
-        spec=tabs.newTabSpec("mitab2");
-        spec.setContent(R.id.tab2);
-        spec.setIndicator("Todas las localizaciones de todos",
-                res.getDrawable(R.drawable.icono_ruta));
-        tabs.addTab(spec);
-
-        spec=tabs.newTabSpec("mitab3");
-        spec.setContent(R.id.tab3);
-        spec.setIndicator("Todas tus localizaciones",
-                res.getDrawable(R.drawable.icono_ruta));
-        tabs.addTab(spec);
-
-        tabs.setCurrentTab(0);
-        //////////////////////////////////////
+        View view;
+        view = inflater.inflate(R.layout.activity_maps, container);
 
 
-        manejador = (LocationManager) getSystemService(LOCATION_SERVICE);
+        //manejador = (LocationManager) contexto.getSystemService(Context.LOCATION_SERVICE);
+
         muestraProveedores();
         /*CRITERIOS PARA ELEGIR EL PROVEEDOR:SIN COSTE, QUE MUESTRE ALTITUD, Y QUE TENGA PRECISIÓN FINA. CON ESTOS
         * SERÁ ELEGIDO AUTOMÁTICAMENTE EL PROVEEDOR A UTILIZAR POR EL PROPIO TERMINAL*/
@@ -158,10 +127,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Log.v(LOGCAT, "Mejor proveedor: " + proveedor + "\n");
         Log.v(LOGCAT, "Comenzamos con la última localización conocida:");
 
-        //PANTALLA SIEMPRE ENCENDIDA...
-        getWindow (). addFlags ( WindowManager. LayoutParams . FLAG_KEEP_SCREEN_ON );
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        //requestQueue = Volley.newRequestQueue(contexto);
+        //volley = Volley
+        requestQueue = Volley.newRequestQueue(contexto);
+        //myjsonObjectRequest = Volley.newRequestQueue(contexto);
+
+
+        if (ActivityCompat.checkSelfPermission(contexto, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(contexto, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -169,77 +142,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
-            return;
+           // return ;
         }
-
-        requestQueue = Volley.newRequestQueue(this);
         Location localizacion = manejador.getLastKnownLocation(proveedor);
 
         muestraLocaliz(localizacion);
         muestradireccion(localizacion);
 
-        //////////////////////////////////////////////////SE ANULA LA PRIMERA LLAMADA AL MÉTODO////////////////////////////////////////////////////
-        //enviaDatosAlServidor( );
+        //Bundle bundle = getActivity().getIntent().getExtras("USUARIO");
 
-        Bundle bundle = getIntent().getExtras();
+        Bundle bundle = new Bundle();
+        //bundle.putString("datos", "datos que necesito");
         usuarioMapas=bundle.getString("USUARIO");
 
-        Toast.makeText(getApplicationContext(),"Me alegro de verte... "+usuarioMapas,Toast.LENGTH_SHORT).show();
+        Toast.makeText(contexto,"Me alegro de verte... "+usuarioMapas,Toast.LENGTH_SHORT).show();
 
-        tabs.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
-            @Override
-            public void onTabChanged(String tabId) {
-
-                //Recuperamos el contexto de la actividad
-                Context contexto = MapsActivity.this;
-
-                if(tabId.equals("mitab1")) {
-                    //Traemos todas la última ubicación de cada usuario
-                    patron_Busqueda_Url = "http://petty.hol.es/obtener_localizaciones.php";
-                    // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-                    SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                            .findFragmentById(R.id.map);
-                    //mapFragment.getMapAsync((OnMapReadyCallback) getApplicationContext());
-                    mapFragment.getMapAsync((OnMapReadyCallback) contexto);
-
-                }
-
-                if(tabId.equals("mitab2")) {
-                    //Traemos todas las localizaciones de todos los usuarios
-                    patron_Busqueda_Url = "http://petty.hol.es/obtener_localizaciones_todas.php";
-                    // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-                    SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                            .findFragmentById(R.id.map2);
-                    //mapFragment.getMapAsync((OnMapReadyCallback) getApplicationContext());
-                    mapFragment.getMapAsync((OnMapReadyCallback) contexto);
-                }
-
-
-                if(tabId.equals("mitab3")) {
-                    //onCreate(Bundle savedInstanceState);
-                    patron_Busqueda_Url = "http://petty.hol.es/obtener_todas_por_usuario.php";
-                    // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-                    SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                            .findFragmentById(R.id.map3);
-                    //mapFragment.getMapAsync((OnMapReadyCallback) getApplicationContext());
-                    mapFragment.getMapAsync((OnMapReadyCallback) contexto);
-                }
-
-            }
-        });
-
-
-
-
-
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-
-
+        //return super.onCreateView(inflater, container, savedInstanceState);
+        return view;
     }
-
 
     private void traerMarcadoresWebService() {
         //PETICIÓN PARA TRAER LOS MARCADORES DE TODOS LOS USUARIOS DEL WEBSERVICES:
@@ -248,15 +168,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         //String ciudad = txtciudad.getText().toString();
 
-
-        //String patron_Busqueda_Url = "http://petty.hol.es/obtener_localizaciones_todas.php";
-        //String patronUrl = "http://petty.hol.es/obtener_localizaciones.php";
-
-
-        //String patronUrl = "http://petty.hol.es/obtener_todas_por_usuario.php";
+        String patronUrl = "http://petty.hol.es/obtener_localizaciones.php";
+        String uri = String.format(patronUrl);
 
 
-        String uri = String.format(patron_Busqueda_Url);
+        Log.v(LOGTAG, "Ha llegado a immediateRequestTiempoActual. Uri: " + uri);
 
         myjsonObjectRequest = new MyJSonRequestImmediate(//Prioridad
                 Request.Method.GET,
@@ -272,7 +188,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         String numero = "";
                         Double latitud = null;
                         Double longitud = null;
-                        double velocidad =  0.0;
+                        Double velocidad = 0.0;
 
                         String fechaHora = "";
 
@@ -298,11 +214,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                                     // velocidad = json_array.getJSONObject(z).getDouble("Velocidad");
 
+                                    velocidad = json_array.getJSONObject(z).getDouble("Velocidad");
 
-                                     //velocidad = json_array.getJSONObject(z).getDouble("Velocidad");
-
-
-                                    velocidad=(int)conversionVelocidad((int) json_array.getJSONObject(z).getDouble("Velocidad"));
 
                                     fechaHora = json_array.getJSONObject(z).getString("FechaHora");
 
@@ -311,12 +224,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                                     if(usuario.equalsIgnoreCase("Antonio")){
 
-                                                mMap.addMarker(new MarkerOptions()
-                                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.icono_situar))
-                                                        .anchor(0.0f, 1.0f)
-                                                        .title(usuario)
-                                                        .snippet(calle+" "+numero+">"+fechaHora+">"+velocidad)
-                                                        .position(milocalizacion));
+                                        mMap.addMarker(new MarkerOptions()
+                                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.icono_situar))
+                                                .anchor(0.0f, 1.0f)
+                                                .title(usuario)
+                                                .snippet(calle+" "+numero+"-->"+fechaHora+"-->"+velocidad)
+                                                .position(milocalizacion));
 
                                     }
 
@@ -327,7 +240,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.icono_situacion))
                                                 .anchor(0.0f, 1.0f)
                                                 .title(usuario)
-                                                .snippet(calle+" "+numero+">"+fechaHora+">"+velocidad)
+                                                .snippet(calle+" "+numero+"-->"+fechaHora+"-->"+velocidad)
                                                 .position(milocalizacion));
                                     }
 
@@ -336,7 +249,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.icono_ruta))
                                                 .anchor(0.0f, 1.0f)
                                                 .title(usuario)
-                                                .snippet(calle+" "+numero+">"+fechaHora+">"+velocidad)
+                                                .snippet(calle+" "+numero+"-->"+fechaHora+"-->"+velocidad)
                                                 .position(milocalizacion));
                                     }
 
@@ -345,7 +258,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                                 //.icon(BitmapDescriptorFactory.fromResource(R.drawable.icono_ubicacion))//Icono por defecto
                                                 //.anchor(0.0f, 1.0f)
                                                 .title(usuario)
-                                                .snippet(calle+" "+numero+">"+fechaHora+">"+velocidad)
+                                                .snippet(calle+" "+numero+"-->"+fechaHora+"-->"+velocidad)
                                                 .position(milocalizacion));
                                     }
 
@@ -371,7 +284,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.d(LOGTAG, "Error Respuesta en JSON: " + error.getMessage());
-                        Toast.makeText(context, "Se ha producido un error conectando al Servidor", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(contexto, "Se ha producido un error conectando al Servidor", Toast.LENGTH_SHORT).show();
 
                     }
                 }
@@ -383,12 +296,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
    /*     milocalizacion=new LatLng(latitud,longitud);
         mMap.addMarker(new MarkerOptions().position(milocalizacion).title(usuario+" está en "+direccion+" "+calle+" "+numero));
  mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(milocalizacion,15));*/
-            }
-
-
-    // Métodos para mostrar información
-    private void log(String cadena) {
-        //salida.append(cadena + "\n");
     }
     private void muestraLocaliz(Location localizacion) {
         if (localizacion == null)
@@ -396,39 +303,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         else
             log(localizacion.toString() + "\n");
     }
-
-
-    private double conversionVelocidad(float speed) {
-
-
-
-        double speedConvertida=(double) (speed/1000) * 3600;
-
-        return speedConvertida;
-    }
-
     private void muestradireccion(Location location) {
 
-        this.context = getApplicationContext();
+        this.contexto = contexto;
         //location = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
         Geocoder geo;
 
+        //Lo pasamos a miembros de la clase
+        /*double longitud;
+        double latitud;
+        double velocidad;
+        double altitud;
+        String direccion;
+        String calle;
+        String poblacion;
+        String numero;
+        String velocidad_dir;*/
 
         if (location != null) {
             //Devolvemos los datos
             latitud = location.getLatitude();
             longitud = location.getLongitude();
-
-            //velocidad = conversionVelocidad(location.getSpeed());
-
-
-            //velocidad= conversionVelocidad(location.getSpeed());
-
             velocidad = location.getSpeed();
             altitud = location.getAltitude();
 
             //PARA OBTENER LA DIRECCIÓN
-            geo = new Geocoder(context, Locale.getDefault());
+            geo = new Geocoder(contexto, Locale.getDefault());
 
             try {
                 List<Address> list =
@@ -463,9 +363,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
     }
-
-
-
     private void muestraProveedores() {
         log("Proveedores de localización: \n ");
         List<String> proveedores = manejador.getAllProviders();
@@ -488,10 +385,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 + ", supportsBearing=" + info.supportsBearing()
                 + ", supportsSpeed=" + info.supportsSpeed() + " ]\n");
     }
-
     private void enviaDatosAlServidor() {
-
-        //PREPARA Y HACE LA LLAMADA PARA LA INSERCCIÓN AUTOMÁTICA DE LAS LOCALIZACIONES DEL USUARIO CONECTADO
 
         String INSERT="http://petty.hol.es/insertar_localizacion.php";
         Calendar calendarNow = new GregorianCalendar(TimeZone.getTimeZone("Europe/Madrid"));
@@ -518,11 +412,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         hiloconexion.execute(INSERT);   // Parámetros que recibe doInBackground
 
     }
-
     public class ObtenerWebService extends AsyncTask<String,Void,String> {
 
-
-        //CONECTA E INSERTA LAS LOCALIZACIONES AUTOMÁTICAS DEL USUARIO CONECTADO
         @Override
         protected String doInBackground(String... params) {
 
@@ -615,19 +506,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         protected void onPostExecute(String s) {
             //super.onPostExecute(s);
 
-            Toast.makeText(getApplicationContext(),s,Toast.LENGTH_LONG).show();
+            Toast.makeText(contexto,s,Toast.LENGTH_LONG).show();
         }
     }
-
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -637,20 +518,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));*/
 
-         milocalizacion=new LatLng(latitud,longitud);
-       ///////////////////////////////////////////////////////
+        milocalizacion=new LatLng(latitud,longitud);
+        ///////////////////////////////////////////////////////
         traerMarcadoresWebService();
+    }
 
+    // Métodos para mostrar información
+    private void log(String cadena) {
+        //salida.append(cadena + "\n");
     }
 
 
-    @Override//Cada vez que cambian los parámetros de la localización...
+    @Override
     public void onLocationChanged(Location location) {
         muestraLocaliz(location);
         muestradireccion(location);
         enviaDatosAlServidor();
         traerMarcadoresWebService();
-
     }
 
 
@@ -659,56 +543,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-
-    @Override
+       @Override
     public void onProviderEnabled(String provider) {
-
-        Toast.makeText(context,"El Proveedor está habilitado",Toast.LENGTH_SHORT).show();
-
+           Toast.makeText(contexto,"El Proveedor está habilitado",Toast.LENGTH_SHORT).show();
     }
 
 
     @Override
     public void onProviderDisabled(String provider) {
-
-        Toast.makeText(context,"El Proveedor está deshabilitado",Toast.LENGTH_SHORT).show();
+        Toast.makeText(contexto,"El Proveedor está deshabilitado",Toast.LENGTH_SHORT).show();
     }
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        manejador.requestLocationUpdates(proveedor, TIEMPO_MIN, DISTANCIA_MIN,
-                this);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        manejador.removeUpdates(this);
-    }
-
 
 
 }

@@ -6,7 +6,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -51,12 +50,13 @@ public class Login extends AppCompatActivity  {
 
     //Declaramos los controles con anotaciones de ButterKnife
     @Bind(R.id.btnLogin) Button btnLogin;
-    @Bind(R.id.btnRegistrarse) Button btnRegistrarse;
+    //@Bind(R.id.btnRegistrarse) Button btnRegistrarse;
+
     @Bind(R.id.txtNombre) EditText txtNombre;
     @Bind(R.id.txtPassword) EditText txtPassword;
-    @Bind(R.id.txtEmail) EditText txtEmail;
+    //@Bind(R.id.txtEmail) EditText txtEmail;
 
-    private static long back_pressed;//Contador para cerrar la app al pulsar dos veces seguidas el btón de cerrar. Se gestiona en el evento onBackPressed
+
 
     /*private Button btnLogin,btnRegistrarse;
     private EditText txtNombre,txtPassword;*/
@@ -65,8 +65,8 @@ public class Login extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        /*Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);*/
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
@@ -88,7 +88,7 @@ public class Login extends AppCompatActivity  {
 
         txtNombre.setText("");
         txtPassword.setText("");
-        txtEmail.setText("");
+        //txtEmail.setText("");
 
 
     }
@@ -102,7 +102,7 @@ public class Login extends AppCompatActivity  {
         String tag_json_obj_actual = "json_obj_req_actual";
         final String username = txtNombre.getText().toString().trim();
         final String password = txtPassword.getText().toString().trim();
-        final String email = txtEmail.getText().toString().trim();
+       // final String email = txtEmail.getText().toString().trim();
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, REGISTER_URL,
                 new Response.Listener<String>() {
@@ -121,10 +121,11 @@ public class Login extends AppCompatActivity  {
                 }){
             @Override
             protected Map<String,String> getParams(){
+
                 Map<String,String> params = new HashMap<String, String>();
                 params.put(KEY_USERNAME,username);
                 params.put(KEY_PASSWORD,password);
-                params.put(KEY_EMAIL, email);
+                //params.put(KEY_EMAIL, email);
                 return params;
             }
 
@@ -138,11 +139,11 @@ public class Login extends AppCompatActivity  {
         limpiarDatos();
     }
 
-    private boolean validarEntrada(String tipo) {
+    /*private boolean validarEntrada(String tipo) {
 
         final String username = txtNombre.getText().toString().trim();
         final String password = txtPassword.getText().toString().trim();
-        final String email = txtEmail.getText().toString().trim();
+        //final String email = txtEmail.getText().toString().trim();
 
         if(tipo.equals("registro")){
             if(username.isEmpty()||password.isEmpty()||email.isEmpty()){
@@ -179,7 +180,7 @@ public class Login extends AppCompatActivity  {
 
         return true;
 
-    }
+    }*/
 
     private void userLogin(final Button btnLogin) {
 
@@ -206,6 +207,9 @@ public class Login extends AppCompatActivity  {
 
                             Intent intentInicio=new Intent(Login.this,MapsActivity.class);
                             intentInicio.putExtra("USUARIO", username);
+
+
+
                             //intentMapas.putExtra("Email", em);
                             //intentMapas.putExtra("Direccion", direccion);
 
@@ -264,7 +268,7 @@ public class Login extends AppCompatActivity  {
 
         final String username = txtNombre.getText().toString().trim();
         final String password = txtPassword.getText().toString().trim();
-        final String email = txtEmail.getText().toString().trim();
+       // final String email = txtEmail.getText().toString().trim();
         @Override
         protected String doInBackground(String... params) {
 
@@ -289,7 +293,7 @@ public class Login extends AppCompatActivity  {
                 JSONObject jsonParam = new JSONObject();
                 jsonParam.put(KEY_USERNAME,username);
                 jsonParam.put(KEY_PASSWORD, password);
-                jsonParam.put(KEY_EMAIL, email);
+                //jsonParam.put(KEY_EMAIL, email);
 
                 // Envio los parámetros post.
                 OutputStream os = urlConn.getOutputStream();
@@ -351,7 +355,7 @@ public class Login extends AppCompatActivity  {
             limpiarDatos();
             //Toast.makeText(getApplicationContext(),devuelve,Toast.LENGTH_LONG).show();
 
-            Snackbar snack = Snackbar.make(btnRegistrarse, devuelve, Snackbar.LENGTH_LONG);
+            Snackbar snack = Snackbar.make(btnLogin, devuelve, Snackbar.LENGTH_LONG);
             ViewGroup group = (ViewGroup) snack.getView();
             group.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
             snack.show();
@@ -359,44 +363,33 @@ public class Login extends AppCompatActivity  {
     }
 
 
-    @OnClick(R.id.btnRegistrarse)
+  /*  @OnClick(R.id.btnRegistrarse)
     public void btnRegistrarse(){
 
-        /*Intent intent=new Intent(Login.this,MapsActivity.class);
-        startActivity(intent);*/
+        *//*Intent intent=new Intent(Login.this,MapsActivity.class);
+        startActivity(intent);*//*
         //registerUser();//Utilizando Volley
 
-     if (validarEntrada("registro")) {
+    *//* if (validarEntrada("registro")) {
          enviaDatosAlServidor();//Damos de alta el usuario utilizando un AsyncTacks
-     }
-    }
+     }*//*
+    }*/
 
 
     @OnClick(R.id.btnLogin)
     public void btnLogin(){
 
-      if(validarEntrada("login")) {
-
-          userLogin(btnLogin);
+     /* if(validarEntrada("login")) {
 
 
-      }
+
+
+      }*/
+        userLogin(btnLogin);
     }
 
 
-    @Override
-    public void onBackPressed() {
-/**
- * Cierra la app cuando se ha pulsado dos veces seguidas en un intervalo inferior a dos segundos.
- */
 
-        if (back_pressed + 2000 > System.currentTimeMillis())
-            super.onBackPressed();
-        else
-            Toast.makeText(getBaseContext(), R.string.eltiempo_salir, Toast.LENGTH_SHORT).show();
-        back_pressed = System.currentTimeMillis();
-        // super.onBackPressed();
-    }
 
     /*@Override
     public void onClick(View v) {

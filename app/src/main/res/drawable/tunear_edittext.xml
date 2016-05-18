@@ -2,12 +2,12 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-    <corners android:radius="3dp" /><!--Redondeo de las esquinas-->
+    <corners android:radius="8dp" /><!--Redondeo de las esquinas-->
     <stroke
-        android:width="1px"
+        android:width="2px"
         android:color="@color/colorAccent"/><!--Color y anchura del redondeo-->
 
-    <solid android:color="#263238" /><!--Color de fondo-->
+    <solid android:color="#40f44336" /><!--Color de fondo-->
 
    <!-- <stroke android:background="@color/md_blue_grey_500"/>-->
 
