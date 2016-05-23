@@ -1,8 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#d50000</color>
+
+
+   <!-- <color name="colorPrimary">#d50000</color>
     <color name="colorPrimaryDark">#b71c1c</color>
+    <color name="colorAccent">#cfd8dc</color>-->
+
+
+    <color name="colorPrimary">#7cb342</color>
+    <color name="colorPrimaryDark">#558b2f</color>
     <color name="colorAccent">#cfd8dc</color>
+
+    <color name="transparente">#00000000</color>
+
+
+ <!-- greens -->
+
+ <color name="md_green_50">#e8f5e9</color>
+ <color name="md_green_100">#c8e6c9</color>
+ <color name="md_green_200">#a5d6a7</color>
+ <color name="md_green_300">#81c784</color>
+ <color name="md_green_400">#66bb6a</color>
+ <color name="md_green_500">#4caf50</color>
+ <color name="md_green_600">#43a047</color>
+ <color name="md_green_700">#388e3c</color>
+ <color name="md_green_800">#2e7d32</color>
+ <color name="md_green_900">#1b5e20</color>
+ <color name="md_green_A100">#b9f6ca</color>
+ <color name="md_green_A200">#69f0ae</color>
+ <color name="md_green_A400">#00e676</color>
+ <color name="md_green_A700">#00c853</color>
+ <color name="md_green_500_25">#404caf50</color>
+ <color name="md_green_500_50">#804caf50</color>
+ <color name="md_green_500_75">#c04caf50</color>
+
+ <!--light greens-->
+ <color name="md_light_green_50">#f1f8e9</color>
+ <color name="md_light_green_100">#dcedc8</color>
+ <color name="md_light_green_200">#c5e1a5</color>
+ <color name="md_light_green_300">#aed581</color>
+ <color name="md_light_green_400">#9ccc65</color>
+ <color name="md_light_green_500">#8bc34a</color>
+ <color name="md_light_green_600">#7cb342</color>
+ <color name="md_light_green_700">#689f38</color>
+ <color name="md_light_green_800">#558b2f</color>
+ <color name="md_light_green_900">#33691e</color>
+ <color name="md_light_green_A100">#ccff90</color>
+ <color name="md_light_green_A200">#b2ff59</color>
+ <color name="md_light_green_A400">#76ff03</color>
+ <color name="md_light_green_A700">#64dd17</color>
+ <color name="md_light_green_500_25">#408bc34a</color>
+ <color name="md_light_green_500_50">#808bc34a</color>
+ <color name="md_light_green_500_75">#c88bc34a</color>
+
+
+
 
     <!--Gama de grises-->
     <color name="md_white_1000">#ffffff</color>
@@ -13,7 +65,6 @@
     <color name="md_white_1000_50">#80ffffff</color>
     <color name="md_white_1000_60">#99ffffff</color>
     <color name="md_white_1000_75">#c0ffffff</color>
-
 
     <!--Gama de grises-->
     <color name="md_blue_grey_50">#eceff1</color>
@@ -30,16 +81,6 @@
     <color name="md_blue_grey_500_50">#80607d8b</color>
     <color name="md_blue_grey_500_75">#c0607d8b</color>
 
-    <!--gama de naranjas-->
-    <color name="md_orange_500">#ff9800</color>
-    <color name="md_orange_600">#fb8c00</color>
-    <color name="md_orange_700">#f57c00</color>
-    <color name="md_orange_800">#ef6c00</color>
-    <color name="md_orange_900">#e65100</color>
-    <color name="md_orange_A100">#ffd180</color>
-    <color name="md_orange_A200">#ffab40</color>
-    <color name="md_orange_A400">#ff9100</color>
-    <color name="md_orange_A700">#ff6d00</color>
 
 
 

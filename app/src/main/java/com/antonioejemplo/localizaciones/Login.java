@@ -1,12 +1,11 @@
 package com.antonioejemplo.localizaciones;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,17 +20,6 @@ import com.android.volley.toolbox.StringRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,6 +51,8 @@ public class Login extends AppCompatActivity  {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        /*setTheme(R.style.AppTheme_Theme_Dialog);*/
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         /*Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -88,101 +78,39 @@ public class Login extends AppCompatActivity  {
 
         txtNombre.setText("");
         txtPassword.setText("");
-        //txtEmail.setText("");
-
-
     }
 
 
-    private void registerUser(){
 
 
-
-        //EL USUARIO NO EXISTÍA EN LA BBDD DE LA APP Y SE REGISTRA.
-        String tag_json_obj_actual = "json_obj_req_actual";
-        final String username = txtNombre.getText().toString().trim();
-        final String password = txtPassword.getText().toString().trim();
-       // final String email = txtEmail.getText().toString().trim();
-
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, REGISTER_URL,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Toast.makeText(Login.this,response+"Ya estás dado de alta en la aplicación. Ahora puedes logarte para utilizarla",Toast.LENGTH_LONG).show();
-
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("Error insertando", "El usuario no se ha podido dar de alta");
-                        Toast.makeText(Login.this,error.toString(),Toast.LENGTH_LONG).show();
-                    }
-                }){
-            @Override
-            protected Map<String,String> getParams(){
-
-                Map<String,String> params = new HashMap<String, String>();
-                params.put(KEY_USERNAME,username);
-                params.put(KEY_PASSWORD,password);
-                //params.put(KEY_EMAIL, email);
-                return params;
-            }
-
-        };
-
-        /*RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);*/
-
-        // Añadir petición a la cola
-        AppController.getInstance().addToRequestQueue(stringRequest, tag_json_obj_actual);
-        limpiarDatos();
-    }
-
-    /*private boolean validarEntrada(String tipo) {
+    private boolean validarEntrada() {
 
         final String username = txtNombre.getText().toString().trim();
         final String password = txtPassword.getText().toString().trim();
-        //final String email = txtEmail.getText().toString().trim();
-
-        if(tipo.equals("registro")){
-            if(username.isEmpty()||password.isEmpty()||email.isEmpty()){
-
-                //Toast.makeText(getApplicationContext(),"Para registrarte debes rellenar los campos nombre, email y contraseña",Toast.LENGTH_LONG).show();
-
-                Snackbar snack = Snackbar.make(btnRegistrarse, R.string.avisoaltausuario, Snackbar.LENGTH_LONG);
-                ViewGroup group = (ViewGroup) snack.getView();
-                group.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                snack.show();
 
 
-                return false;
-            }
 
 
-        }else if (tipo.equals("login")){
 
             if(username.isEmpty()||password.isEmpty()){
 
                 //Toast.makeText(getApplicationContext(),"Para logarte en la aplicación debes rellenar los campos nombre y contraseña",Toast.LENGTH_LONG).show();
 
-                Snackbar snack = Snackbar.make(btnRegistrarse, R.string.avisologarseusuario, Snackbar.LENGTH_LONG);
+                Snackbar snack = Snackbar.make(btnLogin, R.string.avisologarseusuario, Snackbar.LENGTH_LONG);
                 ViewGroup group = (ViewGroup) snack.getView();
                 group.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 snack.show();
 
                 return false;
             }
-
-        }
-
-
-
         return true;
 
-    }*/
+    }
 
     private void userLogin(final Button btnLogin) {
+
+
+        //http://petty.hol.es/validar_usuario.php
 
         //EL USUARIO SE LOGA PARA ENTRAR EN LA APLICACIÓN
         final String KEY_USERNAME_VALIDAR = "username";
@@ -191,45 +119,77 @@ public class Login extends AppCompatActivity  {
         final String username = txtNombre.getText().toString().trim();
         final String password = txtPassword.getText().toString().trim();
 
-
+        final ProgressDialog pDialog = new ProgressDialog(this);
+        pDialog.setMessage("Iniciando sesión.., espera por favor");
+        pDialog.show();
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, LOGIN_URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        if(response.trim().equals("success")){
-                            //Validación correcta... abrimos mapas pasáncole el nombre de usuario introducido y validado
-                            //Toast.makeText(Login.this,"Usuario correcto",Toast.LENGTH_LONG).show();
-
-                            //
-                            /*Intent intentInicio=new Intent(Login.this,Inicio.class);
-                            intentInicio.putExtra("USUARIO", username);*/
-
-                            Intent intentInicio=new Intent(Login.this,MapsActivity.class);
-                            intentInicio.putExtra("USUARIO", username);
+                        pDialog.hide();
+                        String nombre="";
+                        String email="";
+                        String androidID="";
+                        String telefono="";
 
 
 
-                            //intentMapas.putExtra("Email", em);
-                            //intentMapas.putExtra("Direccion", direccion);
+                        try {
+                            //DEVUELVE EL SIGUIENTE JSON: {"estado":1,"usuario":{"Id":"10","Username":"Pepe","Password":"1","Email":"email"}}
 
-                            startActivity(intentInicio);
+                        //Creamos un objeto JSONObject para poder acceder a los atributos (campos) del objeto.
+                        JSONObject respuestaJSON = null;   //Creo un JSONObject a partir del StringBuilder pasado a cadena
+                        respuestaJSON = new JSONObject(response.toString());
+                        int resultJSON = Integer.parseInt(respuestaJSON.getString("estado"));   // estado es el nombre del campo en el JSON..Devuelve un entero
 
-                        }else{
-                            //El usuario no existe... Le informamos
-                            //Toast.makeText(Login.this,"El usuario no existe en la aplicación. Debes registrarte para poder utilizarla.",Toast.LENGTH_LONG).show();
 
-                            Snackbar snack = Snackbar.make(btnLogin, R.string.usuarionoexist, Snackbar.LENGTH_LONG);
-                            ViewGroup group = (ViewGroup) snack.getView();
-                            group.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                            snack.show();
+
+
+                            if (resultJSON==1){
+                                JSONObject usuarioJSON = respuestaJSON.getJSONObject("usuario");
+                                nombre=usuarioJSON.getString("Username");
+                                email=usuarioJSON.getString("Email");
+                                /*androidID=usuarioJSON.getString("");
+                                telefono=usuarioJSON.getString("");*/
+
+
+                                Intent intentInicio=new Intent(Login.this,MapsActivity.class);
+                                intentInicio.putExtra("USUARIO", nombre);
+                                //intentMapas.putExtra("Email", em);
+                                //intentMapas.putExtra("Direccion", direccion);
+
+                                //Animación
+                                overridePendingTransition(R.animator.login_in,
+                                        R.animator.login_out);
+
+                                startActivity(intentInicio);
+                                finish();
+
+                            } else  if (resultJSON==2) {
+
+
+                                //El usuario no existe... Le informamos
+                                Toast.makeText(Login.this,R.string.usuarionoexist, Toast.LENGTH_LONG).show();
+
+                               /* Snackbar snack = Snackbar.make(btnLogin, R.string.usuarionoexist, Snackbar.LENGTH_LONG);
+                                ViewGroup group = (ViewGroup) snack.getView();
+                                group.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+                                snack.show();*/
+
+                            }
+
+                            } catch (JSONException e) {
+                            e.printStackTrace();
                         }
+
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         // Toast.makeText(Login.this,error.toString(),Toast.LENGTH_LONG ).show();
+                        pDialog.hide();
                         Snackbar snack = Snackbar.make(btnLogin, error.toString(), Snackbar.LENGTH_LONG);
                         ViewGroup group = (ViewGroup) snack.getView();
                         group.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
@@ -250,11 +210,11 @@ public class Login extends AppCompatActivity  {
 
         // Añadir petición a la cola
         AppController.getInstance().addToRequestQueue(stringRequest, tag_json_obj_actual);
-        limpiarDatos();
+        //limpiarDatos();
     }
 
 
-    private void enviaDatosAlServidor() {
+   /* private void enviaDatosAlServidor() {
 
         String INSERT="http://petty.hol.es/insertar_usuario.php";
 
@@ -361,31 +321,21 @@ public class Login extends AppCompatActivity  {
             snack.show();
         }
     }
+*/
 
 
-  /*  @OnClick(R.id.btnRegistrarse)
-    public void btnRegistrarse(){
-
-        *//*Intent intent=new Intent(Login.this,MapsActivity.class);
-        startActivity(intent);*//*
-        //registerUser();//Utilizando Volley
-
-    *//* if (validarEntrada("registro")) {
-         enviaDatosAlServidor();//Damos de alta el usuario utilizando un AsyncTacks
-     }*//*
-    }*/
 
 
     @OnClick(R.id.btnLogin)
     public void btnLogin(){
 
-     /* if(validarEntrada("login")) {
+      if(validarEntrada()) {
 
 
+          userLogin(btnLogin);
 
+      }
 
-      }*/
-        userLogin(btnLogin);
     }
 
 

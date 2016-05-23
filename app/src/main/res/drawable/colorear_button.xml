@@ -4,10 +4,10 @@
 
     <corners android:radius="8dp" /><!--Redondeo de las esquinas-->
     <stroke
-        android:width="2px"
+        android:width="1px"
         android:color="#ffffff"/>--><!--Color y anchura del redondeo-->
 
-    <solid android:color="#d50000" /><!--Color de fondo-->
+    <solid android:color="#388e3c" /><!--Color de fondo #d50000-->
 
    <!-- <stroke android:background="@color/md_blue_grey_500"/>-->
 

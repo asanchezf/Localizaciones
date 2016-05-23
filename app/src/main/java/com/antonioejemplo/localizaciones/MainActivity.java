@@ -37,6 +37,10 @@ public class MainActivity extends AppCompatActivity {
         Intent intent=new Intent(MainActivity.this,Login.class);
         startActivity(intent);
 
+        /*final Dialog iniciarLogin = new Dialog(this);
+        iniciarLogin.setTitle("Tamaño de borrado:");
+        iniciarLogin.setContentView(R.layout.activity_login);
+        iniciarLogin.dismiss();*/
 
     }
 
@@ -44,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
     @OnClick(R.id.btnRegistrarse)
     public void btnRegistrarse(){
 
+        Intent intent=new Intent(MainActivity.this,Registro.class);
+        startActivity(intent);
      /* if(validarEntrada("login")) {
 
           userLogin(btnLogin);
@@ -64,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         if (back_pressed + 2000 > System.currentTimeMillis())
             super.onBackPressed();
         else
-            Toast.makeText(getBaseContext(), R.string.eltiempo_salir, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.eltiempo_salir, Toast.LENGTH_SHORT).show();
         back_pressed = System.currentTimeMillis();
         // super.onBackPressed();
     }

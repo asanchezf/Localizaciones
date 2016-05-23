@@ -3,17 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="380dp"
+    android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="@dimen/dialog_body"
-    android:background="@android:color/white"
 
+    android:background="#f1f8e9"
     >
-    <!--android:background="#f1f8e9"-->
 
-   <!--
-   android:background="@android:color/background_light"
-   android:background="@color/colorPrimary"-->
+    <!-- android:background="@color/colorPrimary"-->
     <!--android:background="@android:color/background_dark"-->
     <!--android:background="@color/md_blue_grey_900"-->
 
@@ -41,7 +37,7 @@
             android:typeface="sans"
             android:textStyle="bold|italic"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/rellena_los_campos_para_entrar_en_la_app"
+            android:text="@string/rellena_los_campos_para_registrarte"
             android:id="@+id/textView3"
             />
 
@@ -52,7 +48,6 @@
 
 
     <View
-
         android:id="@+id/divid"
         android:layout_gravity="center"
         android:layout_width="340dp"
@@ -63,8 +58,6 @@
         android:layout_marginTop="@dimen/padding_between"
         android:background="#C8C9CB" />
 
-
-
     <EditText
         android:layout_marginTop="5dp"
         android:layout_gravity="center"
@@ -72,19 +65,17 @@
         android:textColor="@color/md_green_700"
         android:typeface="sans"
         android:textStyle="bold|italic"
-        android:hint="@string/introduce_el_nombre"
+        android:hint="Introduce el nombre"
         android:layout_width="300dp"
         android:layout_height="40dp"
         android:textColorHint="#c0607d8b"
-        android:id="@+id/txtNombre"
-        android:contextClickable="false"
-        android:inputType="text" />
+        android:id="@+id/txtNombre" />
 
 
     <EditText
         android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:textAlignment="center"
         android:layout_gravity="center"
+        android:textAlignment="center"
         android:textColorHint="#c0607d8b"
         android:typeface="sans"
         android:textStyle="bold"
@@ -96,6 +87,37 @@
         android:inputType="textPassword"
         android:ems="10"/>
 
+
+
+    <EditText
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_gravity="center"
+        android:textAlignment="center"
+        android:textColorHint="#c0607d8b"
+        android:typeface="sans"
+        android:textStyle="bold"
+        android:inputType="phone"
+        android:hint="Introduce tu número de teléfono"
+        android:layout_width="300dp"
+        android:layout_height="40dp"
+        android:textColor="@color/md_green_700"
+        android:id="@+id/txtTelefono" />
+
+
+
+    <EditText
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_gravity="center"
+        android:textAlignment="center"
+        android:textColorHint="#c0607d8b"
+        android:typeface="sans"
+        android:textStyle="bold"
+        android:hint="Introduce tu email"
+        android:layout_width="300dp"
+        android:layout_height="40dp"
+        android:textColor="@color/md_green_700"
+        android:id="@+id/txtEmail" />
+
     <View
         android:id="@+id/divider"
         android:layout_gravity="center"
@@ -104,63 +126,24 @@
         android:layout_height="3dp"
         android:layout_below="@+id/txtPassword"
         android:layout_marginBottom="@dimen/padding_between"
-        android:layout_marginTop="@dimen/padding_between"
+        android:layout_marginTop="30dp"
         android:background="#C8C9CB" />
 
 
-    <!-- <EditText
-         android:layout_marginTop="@dimen/activity_vertical_margin"
-         android:layout_gravity="center"
-         android:textAlignment="center"
-         android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionMode.Title.Inverse"
-         android:textStyle="italic"
-         android:hint="Introduce tu email"
-         android:layout_width="320dp"
-         android:layout_height="60dp"
-         android:background="@drawable/tunear_edittext"
-         android:id="@+id/txtEmail" />-->
 
     <Button
-        android:layout_marginTop="0dp"
+        android:layout_marginTop="25dp"
         android:layout_gravity="center"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:text="Entrar"
+        android:text="@string/guardar_registro"
 
 
-        android:id="@+id/btnLogin"
+        android:id="@+id/btnRegistrarse"
         android:textColor="#ffffff"
         android:typeface="sans"
         android:background="@drawable/colorear_button"/>
 
-    <CheckBox
-        android:id="@+id/recordar_check"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_below="@+id/btnLogin"
-        android:checked="false"
-        android:textColor="@color/md_green_400"
-        android:typeface="normal"
-        android:textStyle="bold"
-
-        android:text="@string/recordar_check" />
-
-
-    <TextView
-        android:id="@+id/olvidar_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/btnLogin"
-        android:layout_alignRight="@+id/btnLogin"
-        android:layout_below="@+id/recordar_check"
-
-        android:text="@string/olvidar_text"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:layout_gravity="right"
-        android:textColor="@color/md_green_400"
-
-        />
 
 
     <!--android:background="@android:color/background_dark"-->
