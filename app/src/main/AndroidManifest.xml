@@ -40,15 +40,23 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
+        <!-- android:theme="@android:style/Theme.NoTitleBar.Fullscreen" -->
+
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps"
-            android:parentActivityName=".MainActivity"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+            android:parentActivityName=".MainActivity" >
+
+
+
+
+
+        </activity>
+
         <activity
             android:name=".Login"
             android:label="@string/app_name"
-            android:theme="@style/CustomPopUp"></activity>
+            android:theme="@style/CustomPopUp" />
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name">
@@ -57,14 +65,21 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+
+
         </activity>
+        <activity
+            android:name=".Registro"
+            android:parentActivityName=".MainActivity"></activity>
+        <activity android:name=".Inicio_TabLayout"></activity>
 
-        <activity android:name=".Registro"
-            android:parentActivityName=".MainActivity"
-            >
+
+        <activity android:name=".MapsActivity_Material">
+
+
+
         </activity>
-
-
     </application>
 
 </manifest>

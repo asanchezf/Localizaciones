@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:padding="@dimen/dialog_body"
     android:background="@android:color/white"
-
+    tools:context=".Login"
     >
     <!--android:background="#f1f8e9"-->
 
@@ -27,7 +27,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/icono_login"
+            android:src="@drawable/icono_registro"
             android:layout_margin="5dp"/>
 
 
@@ -56,12 +56,12 @@
         android:id="@+id/divid"
         android:layout_gravity="center"
         android:layout_width="340dp"
-        android:layout_height="3dp"
+        android:layout_height="2dp"
 
         android:layout_below="@+id/layoutHorizontal"
         android:layout_marginBottom="@dimen/padding_between"
         android:layout_marginTop="@dimen/padding_between"
-        android:background="#C8C9CB" />
+        android:background="@color/colorPrimary" />
 
 
 
@@ -101,11 +101,11 @@
         android:layout_gravity="center"
         android:layout_width="340dp"
 
-        android:layout_height="3dp"
+        android:layout_height="2dp"
         android:layout_below="@+id/txtPassword"
         android:layout_marginBottom="@dimen/padding_between"
         android:layout_marginTop="@dimen/padding_between"
-        android:background="#C8C9CB" />
+        android:background="@color/colorPrimary" />
 
 
     <!-- <EditText

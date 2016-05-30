@@ -120,7 +120,7 @@ public class Login extends AppCompatActivity  {
         final String password = txtPassword.getText().toString().trim();
 
         final ProgressDialog pDialog = new ProgressDialog(this);
-        pDialog.setMessage("Iniciando sesión.., espera por favor");
+        pDialog.setMessage("Iniciando sesión... espera por favor");
         pDialog.show();
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, LOGIN_URL,
@@ -128,6 +128,7 @@ public class Login extends AppCompatActivity  {
                     @Override
                     public void onResponse(String response) {
                         pDialog.hide();
+                        String id="";
                         String nombre="";
                         String email="";
                         String androidID="";
@@ -148,14 +149,20 @@ public class Login extends AppCompatActivity  {
 
                             if (resultJSON==1){
                                 JSONObject usuarioJSON = respuestaJSON.getJSONObject("usuario");
+                                id=usuarioJSON.getString("Id");
                                 nombre=usuarioJSON.getString("Username");
                                 email=usuarioJSON.getString("Email");
-                                /*androidID=usuarioJSON.getString("");
-                                telefono=usuarioJSON.getString("");*/
+                                androidID=usuarioJSON.getString("ID_Android");
+                                telefono=usuarioJSON.getString("Telefono");
 
 
                                 Intent intentInicio=new Intent(Login.this,MapsActivity.class);
+                                intentInicio.putExtra("ID", id);
                                 intentInicio.putExtra("USUARIO", nombre);
+                                intentInicio.putExtra("EMAIL", email);
+                                intentInicio.putExtra("ANDROID_ID", androidID);
+                                intentInicio.putExtra("TELEFONO", telefono);
+
                                 //intentMapas.putExtra("Email", em);
                                 //intentMapas.putExtra("Direccion", direccion);
 

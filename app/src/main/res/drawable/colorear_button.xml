@@ -7,7 +7,7 @@
         android:width="1px"
         android:color="#ffffff"/>--><!--Color y anchura del redondeo-->
 
-    <solid android:color="#388e3c" /><!--Color de fondo #d50000-->
+    <solid android:color="#8BC34A" /><!--Accent Color de fondo #d50000-->
 
    <!-- <stroke android:background="@color/md_blue_grey_500"/>-->
 

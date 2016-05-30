@@ -1,15 +1,25 @@
 <resources>
 
 
-<!--    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">-->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+<!--    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+ <item name="popupTheme">@style/Theme.AppCompat.Light</item>-->
+
+    <!--<style name="AppTheme" parent="Theme.AppCompat.NoActionBar">-->
+
+    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
    <!-- <style name="AppTheme" parent="Theme.AppCompat">-->
+
+
+
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="popupTheme">@style/Theme.AppCompat.Light</item>
+
+
     </style>
+
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
@@ -17,12 +27,21 @@
     </style>
 
     <style name="ToolbarTheme" parent="AppTheme">
+
         <item name="android:textColorPrimary">@android:color/white</item>
         <item name="android:textColorSecondary">@android:color/white</item>
-        <item name="android:background">@android:color/white</item>
+        <item name="android:background">@color/md_blue_grey_900</item>
+
     </style>
 
+    <style name="TabHosTheme" parent="AppTheme">
 
+        <item name="android:textColorPrimary">@color/md_white_1000</item>
+        <item name="android:textColorSecondary">@android:color/white</item>
+        <item name="android:background">@color/md_blue_grey_900</item>
+
+
+    </style>
 
 
     <style name="CustomPopUp" parent="Theme.AppCompat.Dialog">

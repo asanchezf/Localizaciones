@@ -64,7 +64,7 @@
     <Button
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:text="Login Inr"
+        android:text="Login In"
         android:id="@+id/btnLogin"
         android:background="@drawable/colorear_button"
         android:layout_below="@+id/btnRegistrarse"

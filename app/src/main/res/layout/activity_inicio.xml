@@ -2,15 +2,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
 
 
     tools:context=".MapsActivity"
     android:orientation="vertical">
 
+    <!--tools:ignore="UnusedAttribute"-->
+    <!--android:background="?attr/colorPrimary"
+
+    md_blue_grey_900
+    -->
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:elevation="2dp"
+        tools:ignore="UnusedAttribute"
+
+        />
 
     <TabHost android:id="@android:id/tabhost"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:theme="@style/TabHosTheme"
         >
 
         <LinearLayout
@@ -79,6 +96,11 @@
                         tools:context="com.antonioejemplo.localizaciones.MapsActivity"
                         />
                 </LinearLayout>
+
+
+
+
+
             </FrameLayout>
         </LinearLayout>
     </TabHost>

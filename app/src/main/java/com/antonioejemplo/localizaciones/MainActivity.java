@@ -2,6 +2,8 @@ package com.antonioejemplo.localizaciones;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
@@ -23,6 +25,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.principio);
+        if (Build.VERSION.SDK_INT >= 21) {
+            Resources res = getResources();
+            //
+            getWindow().setStatusBarColor(res.getColor(R.color.colorPrimary));
+        }
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 

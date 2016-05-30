@@ -5,25 +5,35 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-
-    android:background="#f1f8e9"
-    >
-
+    android:background="@android:color/white"
+    tools:context=".Registro">
     <!-- android:background="@color/colorPrimary"-->
     <!--android:background="@android:color/background_dark"-->
     <!--android:background="@color/md_blue_grey_900"-->
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:elevation="5dp"
+        tools:ignore="UnusedAttribute"
+
+        />
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
         android:id="@+id/layoutHorizontal">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/icono_login"
+            android:src="@drawable/icono_registro"
             android:layout_margin="5dp"/>
 
 
@@ -51,12 +61,12 @@
         android:id="@+id/divid"
         android:layout_gravity="center"
         android:layout_width="340dp"
-        android:layout_height="3dp"
+        android:layout_height="2dp"
 
         android:layout_below="@+id/layoutHorizontal"
         android:layout_marginBottom="@dimen/padding_between"
         android:layout_marginTop="@dimen/padding_between"
-        android:background="#C8C9CB" />
+        android:background="@color/colorPrimary" />
 
     <EditText
         android:layout_marginTop="5dp"
@@ -64,6 +74,7 @@
         android:textAlignment="center"
         android:textColor="@color/md_green_700"
         android:typeface="sans"
+        android:inputType="textPersonName"
         android:textStyle="bold|italic"
         android:hint="Introduce el nombre"
         android:layout_width="300dp"
@@ -111,6 +122,7 @@
         android:textAlignment="center"
         android:textColorHint="#c0607d8b"
         android:typeface="sans"
+        android:inputType="textEmailAddress"
         android:textStyle="bold"
         android:hint="Introduce tu email"
         android:layout_width="300dp"
@@ -123,11 +135,11 @@
         android:layout_gravity="center"
         android:layout_width="340dp"
 
-        android:layout_height="3dp"
+        android:layout_height="2dp"
         android:layout_below="@+id/txtPassword"
         android:layout_marginBottom="@dimen/padding_between"
         android:layout_marginTop="30dp"
-        android:background="#C8C9CB" />
+        android:background="@color/colorPrimary" />
 
 
 

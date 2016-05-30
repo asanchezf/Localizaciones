@@ -1,13 +1,13 @@
 package com.antonioejemplo.localizaciones;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -67,8 +67,12 @@ public class Registro extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        //Obtenermos el id del dispositivo
         Id_Android = Settings.Secure.getString(getBaseContext().getContentResolver(), Settings.Secure.ANDROID_ID);
 
 
@@ -221,14 +225,14 @@ public class Registro extends AppCompatActivity {
         //Toast.makeText(getApplicationContext(),devuelve,Toast.LENGTH_LONG).show();
 
 
-            //Toast.makeText(getApplicationContext(),"Para registrarte debes rellenar los campos nombre, email y contraseña",Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),devuelve,Toast.LENGTH_LONG).show();
 
-            Snackbar snack = Snackbar.make(btnRegistrarse, devuelve, Snackbar.LENGTH_LONG);
+            /*Snackbar snack = Snackbar.make(btnRegistrarse, devuelve, Snackbar.LENGTH_LONG);
             ViewGroup group = (ViewGroup) snack.getView();
             group.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-            snack.show();
+            snack.show();*/
 
-            if(podemoslogarnos) {
+            /*if(podemoslogarnos) {
                 Intent intent = new Intent(Registro.this, MainActivity.class);
                 startActivity(intent);
 
@@ -238,7 +242,7 @@ public class Registro extends AppCompatActivity {
 
                 finish();
 
-            }
+            }*/
         }
     }
 

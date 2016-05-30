@@ -2,14 +2,15 @@
 <resources>
 
 
-   <!-- <color name="colorPrimary">#d50000</color>
-    <color name="colorPrimaryDark">#b71c1c</color>
-    <color name="colorAccent">#cfd8dc</color>-->
-
+   <!-- <color name="colorPrimaryDark">#388E3C</color>
+    <color name="colorPrimary">#4CAF50</color>
+    <color name="colorAccent">#8BC34A</color>-->
 
     <color name="colorPrimary">#7cb342</color>
     <color name="colorPrimaryDark">#558b2f</color>
-    <color name="colorAccent">#cfd8dc</color>
+    <color name="colorAccent">#8BC34A</color>
+
+
 
     <color name="transparente">#00000000</color>
 
