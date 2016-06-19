@@ -1,5 +1,6 @@
 package com.antonioejemplo.localizaciones;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
@@ -8,12 +9,12 @@ import android.provider.Settings;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -42,14 +43,16 @@ import butterknife.OnClick;
 
 public class Registro extends AppCompatActivity {
 
-    private static final String REGISTER_URL = "http://petty.hol.es/insertar_usuario.php";
-    public static final String LOGIN_URL = "http://petty.hol.es/validar_usuario.php";
+    //private static final String REGISTER_URL_ASYNC_TASK = "http://petty.hol.es/insertar_usuario.php";//Ws utilizado con Asynctask. Pasamos parámetros en formato json.
+    private static final String REGISTER_URL_VOLLEY = "http://petty.hol.es/insertar_usuario_volley.php";//WS utilizado con Volley. Controla que no se repita el usuario.
+
+    //Parametros enviados al ws.
     public static final String KEY_USERNAME = "Username";
     public static final String KEY_PASSWORD = "Password";
     public static final String KEY_EMAIL = "Email";
     public static final String KEY_ID_ANDROID = "ID_Android";
     public static final String KEY_TELEFONO = "Telefono";
-    String Id_Android="";
+    String id_Android = "";
 
     //Declaramos los controles con anotaciones de ButterKnife
 
@@ -73,32 +76,25 @@ public class Registro extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         //Obtenermos el id del dispositivo
-        Id_Android = Settings.Secure.getString(getBaseContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        id_Android = Settings.Secure.getString(getBaseContext().getContentResolver(), Settings.Secure.ANDROID_ID);
 
 
         ButterKnife.bind(this);
     }
 
 
-    public void limpiarDatos(){
 
-        txtNombre.setText("");
-        txtPassword.setText("");
-        txtEmail.setText("");
-        txtTelefono.setText("");
-
-    }
 
 
     private boolean validarEntrada() {
 
-        final String username = txtNombre.getText().toString().trim();
-        final String password = txtPassword.getText().toString().trim();
-        final String email = txtEmail.getText().toString().trim();
-        final String telefono = txtTelefono.getText().toString().trim();
+        final String Username = txtNombre.getText().toString().trim();
+        final String Password = txtPassword.getText().toString().trim();
+        final String Email = txtEmail.getText().toString().trim();
+        final String Telefono = txtTelefono.getText().toString().trim();
 
 
-            if(username.isEmpty()||password.isEmpty()||email.isEmpty()||telefono.isEmpty()){
+        if (Username.isEmpty() || Password.isEmpty() || Email.isEmpty() || Telefono.isEmpty()) {
 
                 //Toast.makeText(getApplicationContext(),"Para registrarte debes rellenar los campos nombre, email y contraseña",Toast.LENGTH_LONG).show();
 
@@ -118,7 +114,11 @@ public class Registro extends AppCompatActivity {
 
     private void enviaDatosAlServidor() {
 
+        //SE DEJA EL CÓDIGO COMENTADO.
+        //Llamada al Ws utilizando AsyncTask. Los parámetros los pasa en formato Json. Hay que descodificarlos desde el Ws.
+
         String INSERT="http://petty.hol.es/insertar_usuario.php";
+
 
         ObtenerWebService hiloconexion = new ObtenerWebService();
         hiloconexion.execute(INSERT);   // Parámetros que recibe doInBackground
@@ -129,10 +129,10 @@ public class Registro extends AppCompatActivity {
 
     public class ObtenerWebService extends AsyncTask<String,Void,String> {
         boolean podemoslogarnos=false;
-        final String username = txtNombre.getText().toString().trim();
-        final String password = txtPassword.getText().toString().trim();
-         final String email = txtEmail.getText().toString().trim();
-        final String telefono = txtTelefono.getText().toString().trim();
+        final String Username = txtNombre.getText().toString().trim();
+        final String Password = txtPassword.getText().toString().trim();
+        final String Email = txtEmail.getText().toString().trim();
+        final String Telefono = txtTelefono.getText().toString().trim();
         @Override
         protected String doInBackground(String... params) {
 
@@ -154,13 +154,14 @@ public class Registro extends AppCompatActivity {
                 urlConn.setRequestProperty("Content-Type", "application/json");
                 urlConn.setRequestProperty("Accept", "application/json");
                 urlConn.connect();
+                //PASAMOS LOS PARAMETROS POR JSON. EN EL WS HAY QUE DECODIFICAR LOS VALORES....=============
                 //Creo el Objeto JSON
                 JSONObject jsonParam = new JSONObject();
-                jsonParam.put(KEY_USERNAME,username);
-                jsonParam.put(KEY_PASSWORD, password);
-                jsonParam.put(KEY_EMAIL, email);
-                jsonParam.put(KEY_ID_ANDROID, Id_Android);
-                jsonParam.put(KEY_TELEFONO, telefono);
+                jsonParam.put(KEY_USERNAME, Username);
+                jsonParam.put(KEY_PASSWORD, Password);
+                jsonParam.put(KEY_EMAIL, Email);
+                jsonParam.put(KEY_ID_ANDROID, id_Android);
+                jsonParam.put(KEY_TELEFONO, Telefono);
 
                 // Envio los parámetros post.
                 OutputStream os = urlConn.getOutputStream();
@@ -196,8 +197,9 @@ public class Registro extends AppCompatActivity {
 
                     } else if (resultJSON == 2) {
                         devuelve = "El usuario no pudo insertarse correctamente";
+                    } else if (resultJSON == 3) {
+                        devuelve = "Ese usuario ya existe en nuestra Base de Datos";
                     }
-
                 }
 
             } catch (MalformedURLException e) {
@@ -251,24 +253,9 @@ public class Registro extends AppCompatActivity {
     public void btnRegistrarse(){
 
           if (validarEntrada()) {
-              enviaDatosAlServidor();//Damos de alta el usuario utilizando un AsyncTacks
+              //enviaDatosAlServidor();//Damos de alta el usuario utilizando un AsyncTacks
+              registerUser();//Damos de alta el usuario utilizando Volley.
           }
-
-          //registerUser();//Utilizando Volley
-
-/*
-        Toast.makeText(getApplicationContext(),"El usuario ha sido dado de alta. Inicia sesión para entrar en la aplicación",Toast.LENGTH_LONG).show();
-
-        Intent intent=new Intent(Registro.this,MainActivity.class);
-        startActivity(intent);
-
-          //Animación
-          overridePendingTransition(R.animator.login_in,
-                  R.animator.login_out);
-
-          finish();*/
-
-
 
 
     }
@@ -277,35 +264,97 @@ public class Registro extends AppCompatActivity {
     private void registerUser(){
         //EL USUARIO NO EXISTÍA EN LA BBDD DE LA APP Y SE REGISTRA.
         String tag_json_obj_actual = "json_obj_req_actual";
-        final String username = txtNombre.getText().toString().trim();
-        final String password = txtPassword.getText().toString().trim();
-        // final String email = txtEmail.getText().toString().trim();
+        //String INSERT="http://petty.hol.es/Insertar_prueba.php";
+        //String INSERT="http://petty.hol.es/insertar_usuario.php";
+        //String INSERT="http://petty.hol.es/insertar_usuario_volley.php";
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, REGISTER_URL,
+
+        final String Username = txtNombre.getText().toString().trim();
+        final String Password = txtPassword.getText().toString().trim();
+        final String Email = txtEmail.getText().toString().trim();
+        final String Telefono = txtTelefono.getText().toString().trim();
+
+        final ProgressDialog pDialog = new ProgressDialog(this);
+        pDialog.setMessage("Transfiriendo datos... espera por favor.");
+        pDialog.show();
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, REGISTER_URL_VOLLEY,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Toast.makeText(Registro.this,response+"Ya estás dado de alta en la aplicación. Ahora puedes logarte para utilizarla",Toast.LENGTH_LONG).show();
+
+
+                        try {
+                            //DEVUELVE EL SIGUIENTE JSON: {"estado":1,"usuario":{"Id":"10","Username":"Pepe","Password":"1","Email":"email"}}
+
+                            //Creamos un objeto JSONObject para poder acceder a los atributos (campos) del objeto.
+                            JSONObject respuestaJSON = null;   //Creo un JSONObject a partir del StringBuilder pasado a cadena
+                            respuestaJSON = new JSONObject(response.toString());
+                            int resultJSON = Integer.parseInt(respuestaJSON.getString("estado"));   // estado es el nombre del campo en el JSON..Devuelve un entero
+
+
+                            if (resultJSON == 1) {
+
+                                pDialog.dismiss();
+
+                                Snackbar snack = Snackbar.make(btnRegistrarse, R.string.alta_registro_ok, Snackbar.LENGTH_LONG);
+                                ViewGroup group = (ViewGroup) snack.getView();
+                                group.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+                                snack.show();
+
+
+                            } else if (resultJSON == 3) {
+
+                                pDialog.dismiss();
+                                //El usuario ya existe... Le informamos
+                                //Toast.makeText(Login.this,R.string.usuarionoexist, Toast.LENGTH_LONG).show();
+
+                                Snackbar snack = Snackbar.make(btnRegistrarse, R.string.alta_registro_repeat, Snackbar.LENGTH_LONG);
+                                ViewGroup group = (ViewGroup) snack.getView();
+                                group.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+                                snack.show();
+
+                            } else if (resultJSON == 2) {
+
+                                pDialog.dismiss();
+                                //El usuario no existe... Le informamos
+                                //Toast.makeText(Login.this,R.string.usuarionoexist, Toast.LENGTH_LONG).show();
+
+                                Snackbar snack = Snackbar.make(btnRegistrarse, R.string.alta_usuario_error, Snackbar.LENGTH_LONG);
+                                ViewGroup group = (ViewGroup) snack.getView();
+                                group.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+                                snack.show();
+
+                            }
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
 
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e("Error insertando", "El usuario no se ha podido dar de alta");
-                        Toast.makeText(Registro.this,error.toString(),Toast.LENGTH_LONG).show();
+                        // Toast.makeText(Login.this,error.toString(),Toast.LENGTH_LONG ).show();
+                        pDialog.dismiss();
+                        Snackbar snack = Snackbar.make(btnRegistrarse, error.toString(), Snackbar.LENGTH_LONG);
+                        ViewGroup group = (ViewGroup) snack.getView();
+                        group.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                        snack.show();
                     }
                 }){
             @Override
-            protected Map<String,String> getParams(){
-
+            protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String,String> params = new HashMap<String, String>();
-                params.put(KEY_USERNAME,username);
-                params.put(KEY_PASSWORD,password);
-                //params.put(KEY_EMAIL, email);
+                params.put(KEY_USERNAME, Username);
+                params.put(KEY_PASSWORD, Password);
+                params.put(KEY_EMAIL, Email);
+                params.put(KEY_ID_ANDROID, id_Android);
+                params.put(KEY_TELEFONO, Telefono);
                 return params;
             }
-
         };
 
         /*RequestQueue requestQueue = Volley.newRequestQueue(this);
@@ -313,7 +362,7 @@ public class Registro extends AppCompatActivity {
 
         // Añadir petición a la cola
         AppController.getInstance().addToRequestQueue(stringRequest, tag_json_obj_actual);
-        limpiarDatos();
+
     }
 
 

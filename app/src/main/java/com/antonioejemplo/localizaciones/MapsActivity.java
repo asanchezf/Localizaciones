@@ -7,7 +7,13 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -20,10 +26,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.TabHost;
 import android.widget.Toast;
@@ -63,6 +72,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -100,7 +110,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     String numero;
     String velocidad_dir;
     //VARIABLES RECOGIDAS DE LA ACTIVITY LOGIN
-    String id;
+    int id;
     String usuarioMapas;
     String email;
     String android_id;
@@ -139,6 +149,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private int metodo_Get_POST;
     private float zoom = 10;
 
+    //Controles de la cuarta pestaña
+    private RecyclerView lista;
+    private LinearLayoutManager llmanager;
+    private AdaptadorRecyclerView3 adaptador;
+    private ArrayList<Usuarios> usuarios;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -150,6 +165,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setSupportActionBar(toolbar);
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        //Lista de la cuarta pestaña.
+        /*lista=(RecyclerView)findViewById(R.id.lstLista);
+        llmanager = new LinearLayoutManager(this);
+        lista.setLayoutManager(llmanager);
+        llmanager.setOrientation(LinearLayoutManager.VERTICAL);*/
+
+
+     /*   final AdaptadorRecyclerView3 adaptador;
+        adaptador=new AdaptadorRecyclerView3(new ArrayList<Usuarios>(),this,this);*/
+
+
+
 
         Resources res = getResources();
 
@@ -175,6 +203,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         spec.setIndicator(res.getString(R.string.info_tab3),
                 res.getDrawable(R.drawable.icono_ruta));
         tabs.addTab(spec);
+
+        /*spec = tabs.newTabSpec("mitab4");//Muestra un Recyclerview con todos los usuarios
+        spec.setContent(R.id.tab4);
+        spec.setIndicator(res.getString(R.string.info_tab4),
+                res.getDrawable(R.drawable.icono_ruta));
+        tabs.addTab(spec);*/
 
         tabs.setCurrentTab(0);
         //////////////////////////////////////
@@ -212,8 +246,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         muestraLocaliz(localizacion);
         muestradireccion(localizacion);
 
+        //Recogemos los datos enviados por la activity login
         Bundle bundle = getIntent().getExtras();
-        id = bundle.getString("ID");
+        id = bundle.getInt("ID");
         usuarioMapas = bundle.getString("USUARIO");
         email = bundle.getString("EMAIL");
         android_id = bundle.getString("ANDROID_ID");
@@ -231,6 +266,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Context contexto = MapsActivity.this;
 
                 if (tabId.equals("mitab1")) {
+
+                    mMap.clear();
                     //Traemos todas la última ubicación de cada usuario
                     patron_Busqueda_Url = "http://petty.hol.es/obtener_localizaciones.php";
                     //Método GET
@@ -244,9 +281,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(milocalizacion, zoom));
 
+
                 }
 
                 if (tabId.equals("mitab2")) {
+
+                    mMap.clear();
                     //Traemos todas las localizaciones de todos los usuarios
                     patron_Busqueda_Url = "http://petty.hol.es/obtener_localizaciones_todas.php";
                     //Método GET
@@ -261,6 +301,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
                 if (tabId.equals("mitab3")) {
+
+                    mMap.clear();
                     patron_Busqueda_Url = "http://petty.hol.es/obtener_todas_por_usuario.php";
 
                     //Método POST
@@ -273,6 +315,27 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(milocalizacion, zoom));
                 }
 
+
+                if (tabId.equals("mitab4")) {
+                    //Creamos procedimiento para que rellene el ReciclerView de la lista de usuarios AdaptadorRecyclerView3.OnItemClickListener
+
+                    final AdaptadorRecyclerView3 adaptador;
+                    adaptador = new AdaptadorRecyclerView3(usuarios, context);
+
+                    lista.setAdapter(adaptador);
+
+                    adaptador.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Log.i("DemoRecView", "Pulsado el elemento " + lista.getChildPosition(v));
+
+                            Toast.makeText(context, "Telefono:" + lista.getChildItemId(v), Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+
+                }
+
             }
         });
 
@@ -282,6 +345,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment.getMapAsync(this);
       /*  mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(milocalizacion, zoom));//Probar Da error*/
 
+
+        /*final AdaptadorRecyclerView3 adaptador;
+        adaptador=new AdaptadorRecyclerView3(usuarios,context);
+
+        lista.setAdapter(adaptador);*/
 
     }
 
@@ -317,6 +385,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMarkerDragEnd(Marker marker) {//EVENTO GENERADO AL ARRASTRAR MARCADORES.AL FINALIZAR EL ARRASTRE
 
         //Generamos los marcadores y borramos el que se ha creado al arrastrar el que ha generado el evento
+        //mMap.clear();
+
         traerMarcadoresNew();
         marker.remove();
     }
@@ -339,6 +409,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         return false;
     }
+
 
 
     public class TraerMarcadoresAsyncTacks extends AsyncTask<String, Void, String> {
@@ -727,12 +798,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         pDialog.setMessage("Obteniedo posiciones espera por favor...");
         pDialog.show();
 
+        mMap.clear();
+
+
         StringRequest stringRequest = new StringRequest(metodo_Get_POST, uri,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        pDialog.hide();
-
+                        //pDialog.hide();
+                        pDialog.dismiss();
                         String usuario = "";
                         String poblacion = "";
                         String calle = "";
@@ -758,7 +832,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             JSONArray json_array = json_Object.getJSONArray("alumnos");
                             //JSONArray json_array = response.getJSONArray("alumnos");
                             for (int z = 0; z < json_array.length(); z++) {
-                                usuario = json_array.getJSONObject(z).getString("Usuario");
+                                //usuario = json_array.getJSONObject(z).getString("Usuario");
+
+                                usuario = json_array.getJSONObject(z).getString("Username");
                                 poblacion = json_array.getJSONObject(z).getString("Poblacion");
                                 calle = json_array.getJSONObject(z).getString("Calle");
                                 numero = json_array.getJSONObject(z).getString("Numero");
@@ -775,6 +851,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             //CASO 1--http://petty.hol.es/obtener_localizaciones.php
            if (patron_Busqueda_Url == "http://petty.hol.es/obtener_localizaciones.php") {
 
+               //mMap.clear();
                telefonomarcador = json_array.getJSONObject(z).getString("Telefono");
                telefonowsp=telefonomarcador;
 
@@ -782,7 +859,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     if (usuario.equals("Antonio")) {
                         MarkerOptions markerOptions =
                                 new MarkerOptions()
-                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.icono_situar))
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.placeholderotro))
+                                        //.icon(BitmapDescriptorFactory.fromBitmap(writeTextOnDrawable(R.drawable.placeholderotro, "your text goes here")
                                         .anchor(0.0f, 1.0f)
                                         .title(usuario)
                                         .snippet("Día: " + fechaHora + " - Teléf: " + telefonomarcador)
@@ -792,7 +870,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                         .position(milocalizacion);
 
                         Marker marker = mMap.addMarker(markerOptions);
-                        //marker.showInfoWindow();
+                        //marker.isInfoWindowShown();
+
 
                     }
 
@@ -809,7 +888,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                         .flat(true);
 
                         Marker marker = mMap.addMarker(markerOptions);
-                        marker.showInfoWindow();
+                        //marker.showInfoWindow();
 
                     } else if (usuario.equalsIgnoreCase("Dario")) {
 
@@ -831,8 +910,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     //USUARIOS QUE NO TIENEN ICONO PROPIO
                     else {
+                        MarkerOptions markerOptions =
+                                new MarkerOptions()
+                                        //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.placeholderbis))
+                                        .anchor(0.0f, 1.0f)
+                                        .title(usuario)
+                                        .snippet("Día: " + fechaHora + " - Teléf: " + telefonomarcador)
+                                        .draggable(true)
+                                        .position(milocalizacion)
+                                        .flat(true);
 
-                        if (z == 0) {
+                        Marker marker = mMap.addMarker(markerOptions);
+
+
+
+
+                        /*if (z == 0) {
 
                             MarkerOptions markerOptions =
                                     new MarkerOptions()
@@ -895,11 +989,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             //marker.showInfoWindow();
                         }//Fin del if del módulo
 
-                        //Color del marcador por defecto
+                        //Color del marcador por defecto.. no se pone ningún tipo de icono y lo pone rojo....
                         else{
                             MarkerOptions markerOptions =
                                     new MarkerOptions()
                                             //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.placeholderbis))
+                                            .anchor(0.0f, 1.0f)
                                             .title(usuario)
                                             .snippet("Día: "+fechaHora + " - Teléf: " + telefonomarcador)
                                             .draggable(true)
@@ -907,7 +1003,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                             .flat(true);
 
                             Marker marker = mMap.addMarker(markerOptions);
-                        }
+                        }*/
 
 
                     }//Fin else usuarios SIN ICONO PROPIO
@@ -923,10 +1019,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         //CASO 2-Ponemos marcadores para todas las posiciones de todos: ponemos marcadores por defecto
                 else if (metodo_Get_POST == Request.Method.GET && patron_Busqueda_Url == "http://petty.hol.es/obtener_localizaciones_todas.php") {
 
+               //mMap.clear();
                     if (usuario.equals("Antonio")) {
                         MarkerOptions markerOptions =
                                 new MarkerOptions()
-                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.icono_situar))
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.placeholderotro))
                                         .anchor(0.0f, 1.0f)
                                         .title(usuario)
                                         .snippet(calle + " " + numero + "/-/" + fechaHora + "/-/" + velocidad+" KM/H.")
@@ -942,6 +1039,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     else if (usuario.equalsIgnoreCase("Susana")) {
 
+
                         MarkerOptions markerOptions =
                                 new MarkerOptions()
                                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.icono_situacion))
@@ -956,6 +1054,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         //marker.showInfoWindow();
 
                     } else if (usuario.equalsIgnoreCase("Dario")) {
+
 
                         MarkerOptions markerOptions =
                                 new MarkerOptions()
@@ -978,7 +1077,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     else {
                         //Usuarios que no están predefinidos
 
+
                         mMap.addMarker(new MarkerOptions()
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.placeholdermas))
+                                .anchor(0.0f, 1.0f)
                                 .title(usuario)
                                 .snippet(calle + " " + numero + "/-/" + fechaHora + "/-/" + velocidad+" KM/H.")
                                 .position(milocalizacion));
@@ -993,14 +1095,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
            //CASO 3-Ponemos marcadores para todas las posiciones del usuario que se ha logado: ponemos marcadores violetas y cambiamos el snipped
            else if (metodo_Get_POST == Request.Method.POST) {
+               // mMap.clear();
+               mMap.addMarker(new MarkerOptions()
+                       .icon(BitmapDescriptorFactory.fromResource(R.drawable.placeholder))
+                       .anchor(0.0f, 1.0f)
+                       .title(usuario)
+                       .snippet(calle + " " + numero + "/-/" + fechaHora + "/Vel/" + velocidad + " KM/H.")
+                       .position(milocalizacion));
 
-                                        mMap.addMarker(new MarkerOptions()
-                                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))
-                                                .title(usuario)
-                                                .snippet(calle + " " + numero + "/-/" + fechaHora + "/Vel/" + velocidad+" KM/H.")
-                                                .position(milocalizacion));
-
-                                    }
+           }
 
            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(milocalizacion, zoom));
 
@@ -1042,6 +1145,49 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         // Añadir petición a la cola
         AppController.getInstance().addToRequestQueue(stringRequest, tag_json_obj_actual);
 
+
+    }
+
+
+    private Bitmap writeTextOnDrawable(int drawableId, String text) {
+
+        Bitmap bm = BitmapFactory.decodeResource(getResources(), drawableId)
+                .copy(Bitmap.Config.ARGB_8888, true);
+
+        Typeface tf = Typeface.create("Helvetica", Typeface.BOLD);
+
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(Color.WHITE);
+        paint.setTypeface(tf);
+        paint.setTextAlign(Paint.Align.CENTER);
+        paint.setTextSize(convertToPixels(context, 11));
+
+        Rect textRect = new Rect();
+        paint.getTextBounds(text, 0, text.length(), textRect);
+
+        Canvas canvas = new Canvas(bm);
+
+        //If the text is bigger than the canvas , reduce the font size
+        if (textRect.width() >= (canvas.getWidth() - 4))     //the padding on either sides is considered as 4, so as to appropriately fit in the text
+            paint.setTextSize(convertToPixels(context, 7));        //Scaling needs to be used for different dpi's
+
+        //Calculate the positions
+        int xPos = (canvas.getWidth() / 2) - 2;     //-2 is for regulating the x position offset
+
+        //"- ((paint.descent() + paint.ascent()) / 2)" is the distance from the baseline to the center.
+        int yPos = (int) ((canvas.getHeight() / 2) - ((paint.descent() + paint.ascent()) / 2));
+
+        canvas.drawText(text, xPos, yPos, paint);
+
+        return bm;
+    }
+
+
+    public static int convertToPixels(Context context, int nDP) {
+        final float conversionScale = context.getResources().getDisplayMetrics().density;
+
+        return (int) ((nDP * conversionScale) + 0.5f);
 
     }
 
@@ -1921,7 +2067,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 urlConn.connect();
                 //Creo el Objeto JSON
                 JSONObject jsonParam = new JSONObject();
-                jsonParam.put("Usuario", usuarioMapas);
+
+                jsonParam.put("Id_Usuario", id);
+                //jsonParam.put("Usuario", usuarioMapas);
+
                 jsonParam.put("Poblacion", poblacion);
                 jsonParam.put("Calle", calle);
                 jsonParam.put("Numero", numero);
@@ -1959,13 +2108,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     JSONObject respuestaJSON = new JSONObject(result.toString());   //Creo un JSONObject a partir del StringBuilder pasado a cadena
                     //Accedemos al vector de resultados
 
-                    String resultJSON = respuestaJSON.getString("estado");   // estado es el nombre del campo en el JSON
+                    //String resultJSON = respuestaJSON.getString("estado");   // estado es el nombre del campo en el JSON
+                    //Log.d(LOGCAT, "Error insertando localización" + resultJSON);
 
-                    if (resultJSON == "1") {      // hay un registro que mostrar
-                        devuelve = "Localización insertada correctamente";
+                    //Sacamos el valor de estado
+                    int resultJSON = Integer.parseInt(respuestaJSON.getString("estado"));
 
-                    } else if (resultJSON == "2") {
-                        devuelve = "La localización no pudo insertarse";
+
+                    if (resultJSON == 1) {      // hay un registro que mostrar
+                        devuelve = getString(R.string.localizacion_insertada);
+
+                        //else if (resultJSON == "2")
+                    } else if (resultJSON == 2) {
+                        devuelve = getString(R.string.localizacion_error);
+                        Log.d(LOGCAT, "Error insertando localización" + resultJSON);
                     }
 
                 }
@@ -1973,7 +2129,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             } catch (IOException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
+                Log.d(LOGCAT, "Error insertando localización" + e);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -2058,7 +2215,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         //traerMarcadoresWebService();
 
 
+        mMap.clear();
         traerMarcadoresNew();
+
+
         //traerMarcadoresPostPropias();
 
     }
@@ -2073,7 +2233,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onProviderEnabled(String provider) {
 
-        Toast.makeText(context,"El Proveedor está habilitado",Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, R.string.gps_habilitado, Toast.LENGTH_SHORT).show();
 
     }
 
@@ -2081,7 +2241,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onProviderDisabled(String provider) {
 
-        Toast.makeText(context,"El Proveedor está deshabilitado",Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, R.string.gps_deshabilitado, Toast.LENGTH_SHORT).show();
     }
 
 

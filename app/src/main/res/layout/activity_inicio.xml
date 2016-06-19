@@ -1,3 +1,4 @@
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,9 +11,14 @@
 
     <!--tools:ignore="UnusedAttribute"-->
     <!--android:background="?attr/colorPrimary"
+    md_blue_grey_900-->
 
-    md_blue_grey_900
-    -->
+    <!--  <div>Icons made by <a href="http://www.flaticon.com/authors/iconnice" title="Iconnice">Iconnice</a>
+          from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/"
+              title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+              <div>Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by
+              <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+      -->
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -97,7 +103,17 @@
                         />
                 </LinearLayout>
 
+                <!--  <LinearLayout android:id="@+id/tab4"
+                      android:orientation="vertical"
+                      android:layout_width="match_parent"
+                      android:layout_height="match_parent" >
 
+
+                      <include layout="@layout/lista_usuarios"/>
+
+
+
+                  </LinearLayout>-->
 
 
 

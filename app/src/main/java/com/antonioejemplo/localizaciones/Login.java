@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -30,8 +29,10 @@ import butterknife.OnClick;
 
 public class Login extends AppCompatActivity  {
 
-    private static final String REGISTER_URL = "http://petty.hol.es/insertar_usuario.php";
-    public static final String LOGIN_URL = "http://petty.hol.es/validar_usuario.php";
+    //private static final String REGISTER_URL = "http://petty.hol.es/insertar_usuario.php";
+    //public static final String LOGIN_URL = "http://petty.hol.es/validar_usuario.php";//Ws para controlar el acceso a la app.
+    public static final String LOGIN_URL = "http://petty.hol.es/validar_usuario_cifrado.php";//Ws para controlar el acceso a la app.
+
     public static final String KEY_USERNAME = "Username";
     public static final String KEY_PASSWORD = "Password";
     public static final String KEY_EMAIL = "Email";
@@ -74,22 +75,12 @@ public class Login extends AppCompatActivity  {
 
     }
 
-    public void limpiarDatos(){
-
-        txtNombre.setText("");
-        txtPassword.setText("");
-    }
-
-
 
 
     private boolean validarEntrada() {
 
         final String username = txtNombre.getText().toString().trim();
         final String password = txtPassword.getText().toString().trim();
-
-
-
 
 
             if(username.isEmpty()||password.isEmpty()){
@@ -113,8 +104,11 @@ public class Login extends AppCompatActivity  {
         //http://petty.hol.es/validar_usuario.php
 
         //EL USUARIO SE LOGA PARA ENTRAR EN LA APLICACIÓN
+
+        //Parámetros que se envían el Ws
         final String KEY_USERNAME_VALIDAR = "username";
         final String KEY_PASSWORD_VALIDAR = "password";
+
         String tag_json_obj_actual = "json_obj_req_actual";
         final String username = txtNombre.getText().toString().trim();
         final String password = txtPassword.getText().toString().trim();
@@ -127,8 +121,8 @@ public class Login extends AppCompatActivity  {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        pDialog.hide();
-                        String id="";
+                        //pDialog.hide();
+                        int id;
                         String nombre="";
                         String email="";
                         String androidID="";
@@ -137,7 +131,7 @@ public class Login extends AppCompatActivity  {
 
 
                         try {
-                            //DEVUELVE EL SIGUIENTE JSON: {"estado":1,"usuario":{"Id":"10","Username":"Pepe","Password":"1","Email":"email"}}
+                            //DEVUELVE EL SIGUIENTE JSON: {"estado":1,"usuario":{"Id":"10","Username":"Pepe","Password":"dshdsjkhencryptada","Email":"email"}}
 
                         //Creamos un objeto JSONObject para poder acceder a los atributos (campos) del objeto.
                         JSONObject respuestaJSON = null;   //Creo un JSONObject a partir del StringBuilder pasado a cadena
@@ -145,16 +139,15 @@ public class Login extends AppCompatActivity  {
                         int resultJSON = Integer.parseInt(respuestaJSON.getString("estado"));   // estado es el nombre del campo en el JSON..Devuelve un entero
 
 
-
-
                             if (resultJSON==1){
+
+                                //session.setLogin(true);
                                 JSONObject usuarioJSON = respuestaJSON.getJSONObject("usuario");
-                                id=usuarioJSON.getString("Id");
+                                id = usuarioJSON.getInt("Id");
                                 nombre=usuarioJSON.getString("Username");
                                 email=usuarioJSON.getString("Email");
                                 androidID=usuarioJSON.getString("ID_Android");
                                 telefono=usuarioJSON.getString("Telefono");
-
 
                                 Intent intentInicio=new Intent(Login.this,MapsActivity.class);
                                 intentInicio.putExtra("ID", id);
@@ -163,9 +156,8 @@ public class Login extends AppCompatActivity  {
                                 intentInicio.putExtra("ANDROID_ID", androidID);
                                 intentInicio.putExtra("TELEFONO", telefono);
 
-                                //intentMapas.putExtra("Email", em);
-                                //intentMapas.putExtra("Direccion", direccion);
 
+                                pDialog.dismiss();
                                 //Animación
                                 overridePendingTransition(R.animator.login_in,
                                         R.animator.login_out);
@@ -175,14 +167,15 @@ public class Login extends AppCompatActivity  {
 
                             } else  if (resultJSON==2) {
 
-
+                                pDialog.dismiss();
                                 //El usuario no existe... Le informamos
-                                Toast.makeText(Login.this,R.string.usuarionoexist, Toast.LENGTH_LONG).show();
+                                //Toast.makeText(Login.this,R.string.usuarionoexist, Toast.LENGTH_LONG).show();
 
-                               /* Snackbar snack = Snackbar.make(btnLogin, R.string.usuarionoexist, Snackbar.LENGTH_LONG);
+                                Snackbar snack = Snackbar.make(btnLogin, R.string.usuarionoexist, Snackbar.LENGTH_LONG);
                                 ViewGroup group = (ViewGroup) snack.getView();
                                 group.setBackgroundColor(getResources().getColor(R.color.colorAccent));
-                                snack.show();*/
+                                //group.setBackground(RippleDrawable);
+                                snack.show();
 
                             }
 
@@ -196,7 +189,7 @@ public class Login extends AppCompatActivity  {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         // Toast.makeText(Login.this,error.toString(),Toast.LENGTH_LONG ).show();
-                        pDialog.hide();
+                        pDialog.dismiss();
                         Snackbar snack = Snackbar.make(btnLogin, error.toString(), Snackbar.LENGTH_LONG);
                         ViewGroup group = (ViewGroup) snack.getView();
                         group.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
