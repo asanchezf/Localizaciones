@@ -8,7 +8,10 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.antonioejemplo.localizaciones.MainActivity"
-    android:background="@color/colorPrimary">
+    android:background="@drawable/degradado_fondo">
+
+    <!--android:background="@color/colorPrimary"-->
+    <!--android:background="@drawable/degradado_fondo"-->
 
 
     <ImageView
@@ -33,17 +36,18 @@
         android:typeface="sans" />
 
 
+
     <Button
         android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:text="Sing Up"
+        android:layout_height="50dp"
+        android:text="@string/crear_cuenta"
         android:id="@+id/btnRegistrarse"
         android:layout_below="@+id/imageView"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="102dp"
         android:textColor="@color/colorPrimary"
         android:textStyle="bold"
-        android:textSize="14sp"
+        android:textSize="16sp"
         android:typeface="sans"
         android:background="@drawable/tunear_button" />
 
@@ -61,14 +65,15 @@
 
     <Button
         android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:text="Login In"
+        android:layout_height="50dp"
+        android:text="@string/iniciar"
         android:id="@+id/btnLogin"
         android:background="@drawable/colorear_button"
         android:layout_below="@+id/btnRegistrarse"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="49dp"
         android:textColor="#ffffff"
+        android:textSize="16sp"
         android:typeface="sans" />
 
 

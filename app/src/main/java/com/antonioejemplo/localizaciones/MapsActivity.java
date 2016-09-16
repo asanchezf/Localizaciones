@@ -1,8 +1,10 @@
 package com.antonioejemplo.localizaciones;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -23,7 +25,9 @@ import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -154,6 +158,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private LinearLayoutManager llmanager;
     private AdaptadorRecyclerView3 adaptador;
     private ArrayList<Usuarios> usuarios;
+    AlertDialog alert = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -213,7 +218,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         tabs.setCurrentTab(0);
         //////////////////////////////////////
 
-
+        //manejador es el LocationManager
         manejador = (LocationManager) getSystemService(LOCATION_SERVICE);
         muestraProveedores();
         /*CRITERIOS PARA ELEGIR EL PROVEEDOR:SIN COSTE, QUE MUESTRE ALTITUD, Y QUE TENGA PRECISIÓN FINA. CON ESTOS
@@ -229,22 +234,45 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         //PANTALLA SIEMPRE ENCENDIDA...
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
+
+        if (!manejador.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            GpsNoHabilitado();
         }
 
-        requestQueue = Volley.newRequestQueue(this);
-        Location localizacion = manejador.getLastKnownLocation(proveedor);
 
-        muestraLocaliz(localizacion);
-        muestradireccion(localizacion);
+        //Gestionamos los permisos según la versión. A partir de Android M los permisos se gestionan también en ejecución
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+
+                return;
+            } else {//Android M: permsisos habilitados
+
+                Location localizacion = manejador.getLastKnownLocation(proveedor);
+                muestraLocaliz(localizacion);
+                muestradireccion(localizacion);
+            }
+
+        } else {//No es Android M o superior
+
+            Location localizacion = manejador.getLastKnownLocation(proveedor);
+            muestraLocaliz(localizacion);
+            muestradireccion(localizacion);
+        }
+
+
+        requestQueue = Volley.newRequestQueue(this);
+        //Location localizacion = manejador.getLastKnownLocation(proveedor);
+
+
 
         //Recogemos los datos enviados por la activity login
         Bundle bundle = getIntent().getExtras();
@@ -350,6 +378,37 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         adaptador=new AdaptadorRecyclerView3(usuarios,context);
 
         lista.setAdapter(adaptador);*/
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+
+        if (alert != null) {
+            alert.dismiss();
+        }
+    }
+
+    private void GpsNoHabilitado() {
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("El sistema GPS no está activado. La aplicación no funcionará correctamente. ¿Deseas activarlo ahora?")
+                .setCancelable(false)
+                .setPositiveButton(R.string.configurargps, new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                    }
+                });
+        alert = builder.create();
+        alert.show();
+
 
     }
 
@@ -2382,6 +2441,46 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         manejador.removeUpdates(this);
     }
+
+
+    @Override
+    public void onBackPressed() {
+/**
+ * Cierra la app cuando se ha pulsado dos veces seguidas en un intervalo inferior a dos segundos.
+ */
+
+        /*if (back_pressed + 2000 > System.currentTimeMillis())
+            super.onBackPressed();
+        else
+            Toast.makeText(this, R.string.eltiempo_salir, Toast.LENGTH_SHORT).show();
+        back_pressed = System.currentTimeMillis();
+        // super.onBackPressed();*/
+
+        salidaControlada();
+    }
+
+    private void salidaControlada() {
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("¿Seguro que deseas cerrar los mapas de la aplicación? Si lo haces deberás volver a acceder de nuevo introduciendo tu usuario y la contraseña.")
+                .setCancelable(false)
+                .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        finish();
+                    }
+                })
+                .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                    }
+                });
+        alert = builder.create();
+        alert.show();
+
+
+    }
+
+
 
 
 }

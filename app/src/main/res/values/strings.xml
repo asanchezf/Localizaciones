@@ -7,7 +7,7 @@
     <string name="eltiempo_salir">Pulse otra vez para salir</string>
     <string name="usuarionoexist">El usuario y/o la contraseña no existen en la BB.DD.</string>
     <string name="avisoaltausuario">Para registrarte debes rellenar los campos nombre, email, teléfono y contraseña</string>
-    <string name="avisologarseusuario">Para logarte en la aplicación debes rellenar los campos nombre y contraseña</string>
+    <string name="avisologarseusuario">Para entrar en la aplicación debes rellenar los campos nombre y contraseña</string>
     <string name="title_activity_inicio">Inicio</string>
     <string name="rellena_los_campos_para_entrar_en_la_app">Rellena los datos para entrar</string>
     <string name="rellena_los_campos_para_registrarte">Rellena los campos para registrarte</string>
@@ -50,4 +50,7 @@
     <string name="localizacion_error">La localización no pudo insertarse</string>
     <string name="gps_habilitado">GPS habilitado</string>
     <string name="gps_deshabilitado">GPS deshabilitado</string>
+    <string name="configurargps">Configurar GPS</string>
+    <string name="crear_cuenta">CREAR CUENTA</string>
+    <string name="iniciar">INICIAR</string>
 </resources>

@@ -36,7 +36,7 @@
     <Button
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:text="@string/sing_up"
+        android:text="@string/crear_cuenta"
         android:id="@+id/btnRegistrarse"
         android:textColor="@color/colorPrimary"
         android:textStyle="bold"
@@ -62,7 +62,7 @@
     <Button
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:text="Login In"
+        android:text="@string/iniciar"
         android:id="@+id/btnLogin"
         android:background="@drawable/colorear_button"
         android:textColor="#ffffff"

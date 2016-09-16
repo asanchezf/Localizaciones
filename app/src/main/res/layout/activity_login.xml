@@ -10,7 +10,7 @@
     tools:context=".Login"
     >
     <!--android:background="#f1f8e9"-->
-
+    <!--android:background="@android:color/white"-->
    <!--
    android:background="@android:color/background_light"
    android:background="@color/colorPrimary"-->

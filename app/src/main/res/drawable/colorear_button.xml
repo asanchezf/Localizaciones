@@ -5,12 +5,20 @@
     <corners android:radius="8dp" /><!--Redondeo de las esquinas-->
     <stroke
         android:width="1px"
-        android:color="#ffffff"/>--><!--Color y anchura del redondeo-->
+
+        />--><!--Color y anchura del redondeo android:color="#ffffff"-->
 
     <solid android:color="#8BC34A" /><!--Accent Color de fondo #d50000-->
 
    <!-- <stroke android:background="@color/md_blue_grey_500"/>-->
+    <gradient
+        android:startColor="@android:color/background_dark"
+        android:endColor="@color/colorPrimaryDark"
+        android:angle="90">
+        <!--angle debe ser múltiplo de 45-->
 
+
+    </gradient>
 
 
 

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--Para el scroll de la listview-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--<solid android:color="@android:color/white" />-->
+
+    <!--<solid android:color="@color/md_indigo_500"/>-->
+    <solid android:color="@color/colorPrimaryDark" />
+    <corners android:radius="5dp" />
+
+    <size android:width="5dp" />
+
+</shape>
