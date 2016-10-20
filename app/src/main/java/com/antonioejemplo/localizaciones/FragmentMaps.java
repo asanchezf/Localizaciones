@@ -174,7 +174,7 @@ public class FragmentMaps extends Fragment implements OnMapReadyCallback, Locati
 
         Log.v(LOGTAG, "Ha llegado a immediateRequestTiempoActual. Uri: " + uri);
 
-        myjsonObjectRequest = new MyJSonRequestImmediate(//Prioridad
+        myjsonObjectRequest = new MyJSonRequestImmediate(
                 Request.Method.GET,
                 uri,
 

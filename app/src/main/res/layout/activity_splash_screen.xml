@@ -10,7 +10,7 @@
     <ImageView
         android:layout_marginTop="40dp"
         android:layout_gravity="center"
-        android:src="@drawable/constelacion_old"
+        android:src="@drawable/planeta"
         android:layout_width="280dp"
         android:layout_height="210dp"
         android:scaleType="centerCrop"
@@ -40,7 +40,7 @@
         />
 
     <TextView
-
+        android:id="@+id/desarrollador"
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="15dp"
@@ -51,6 +51,7 @@
         android:textColor="@color/md_green_100" />
 
     <TextView
+        android:id="@+id/email"
         android:layout_width="match_parent"
         android:layout_height="16dp"
         android:layout_gravity="center"

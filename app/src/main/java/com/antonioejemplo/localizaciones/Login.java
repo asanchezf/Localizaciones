@@ -90,6 +90,7 @@ public class Login extends AppCompatActivity  {
                 Snackbar snack = Snackbar.make(btnLogin, R.string.avisologarseusuario, Snackbar.LENGTH_LONG);
                 ViewGroup group = (ViewGroup) snack.getView();
                 group.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+
                 snack.show();
 
                 return false;
@@ -158,11 +159,10 @@ public class Login extends AppCompatActivity  {
 
 
                                 pDialog.dismiss();
+                                startActivity(intentInicio);
                                 //Animación
                                 overridePendingTransition(R.animator.login_in,
                                         R.animator.login_out);
-
-                                startActivity(intentInicio);
                                 finish();
 
                             } else  if (resultJSON==2) {

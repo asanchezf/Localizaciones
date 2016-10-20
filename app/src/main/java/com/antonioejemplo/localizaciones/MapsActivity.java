@@ -106,7 +106,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     double longitud;
     double latitud;
+
     float velocidad;
+
     double altitud;
     String direccion;
     String calle;
@@ -872,7 +874,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         String numero = "";
                         Double latitud = null;
                         Double longitud = null;
-                        double velocidad = 0.0;
+                        int velocidad = 0;
 
                         String fechaHora = "";
                         String telefonomarcador = "";
@@ -901,7 +903,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 latitud = json_array.getJSONObject(z).getDouble("Latitud");
 
 
-                                velocidad = (int) conversionVelocidad((int) json_array.getJSONObject(z).getDouble("Velocidad"));
+                                //velocidad = (int) conversionVelocidad((int) json_array.getJSONObject(z).getDouble("Velocidad"));
+                                velocidad = (int) conversionVelocidad(json_array.getJSONObject(z).getDouble("Velocidad"));
                                 fechaHora = json_array.getJSONObject(z).getString("FechaHora");
                                 milocalizacion = new LatLng(latitud, longitud);
 
@@ -983,86 +986,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         Marker marker = mMap.addMarker(markerOptions);
 
 
-
-
-                        /*if (z == 0) {
-
-                            MarkerOptions markerOptions =
-                                    new MarkerOptions()
-                                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
-                                            .title(usuario)
-                                            .snippet("Día: "+fechaHora + " - Teléf: " + telefonomarcador)
-                                            .draggable(true)
-                                            .position(milocalizacion)
-                                            .flat(true);
-
-                            Marker marker = mMap.addMarker(markerOptions);
-
-
-                        }//Fin de z=0
-
-                        if (z == 1) {
-                            //final float colormarcador = BitmapDescriptorFactory.HUE_AZURE;
-
-                            MarkerOptions markerOptions =
-                                    new MarkerOptions()
-                                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
-                                            .title(usuario)
-                                            .snippet("Día: "+fechaHora + " - Teléf: " + telefonomarcador)
-                                            .draggable(true)
-                                            .position(milocalizacion)
-                                            .flat(true);
-
-                            Marker marker = mMap.addMarker(markerOptions);
-                            //marker.showInfoWindow();
-                        }//Fin del if del módulo
-
-                        if (z % 2 == 0 && z != 0) {//Números pares y diferente de cero...
-                            //final float colormarcador = BitmapDescriptorFactory.HUE_AZURE;
-
-                            MarkerOptions markerOptions =
-                                    new MarkerOptions()
-                                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
-                                            .title(usuario)
-                                            .snippet("Día: "+fechaHora + " - Teléf: " + telefonomarcador)
-                                            .draggable(true)
-                                            .position(milocalizacion)
-                                            .flat(true);
-
-                            Marker marker = mMap.addMarker(markerOptions);
-                            //marker.showInfoWindow();
-                        }//Fin del if del módulo
-
-                        if ((z % 2 != 0) && z != 1 && z != 3 && z != 7 && z != 9) {//Número impar y diferente de 1
-
-                            MarkerOptions markerOptions =
-                                    new MarkerOptions()
-                                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                                            .title(usuario)
-                                            .snippet("Día: "+fechaHora + " - Teléf: " + telefonomarcador)
-                                            .draggable(true)
-                                            .position(milocalizacion)
-                                            .flat(true);
-
-                            Marker marker = mMap.addMarker(markerOptions);
-                            //marker.showInfoWindow();
-                        }//Fin del if del módulo
-
-                        //Color del marcador por defecto.. no se pone ningún tipo de icono y lo pone rojo....
-                        else{
-                            MarkerOptions markerOptions =
-                                    new MarkerOptions()
-                                            //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.placeholderbis))
-                                            .anchor(0.0f, 1.0f)
-                                            .title(usuario)
-                                            .snippet("Día: "+fechaHora + " - Teléf: " + telefonomarcador)
-                                            .draggable(true)
-                                            .position(milocalizacion)
-                                            .flat(true);
-
-                            Marker marker = mMap.addMarker(markerOptions);
-                        }*/
 
 
                     }//Fin else usuarios SIN ICONO PROPIO
@@ -1980,10 +1903,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-    private double conversionVelocidad(float speed) {
+    private double conversionVelocidad(double speed) {
 
 
-        double speedConvertida = (double) (speed / 1000) * 3600;
+        double speedConvertida = (speed / 1000) * 3600;
 
         return speedConvertida;
     }
