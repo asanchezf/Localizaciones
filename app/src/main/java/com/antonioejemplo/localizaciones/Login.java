@@ -157,12 +157,11 @@ public class Login extends AppCompatActivity  {
                                 intentInicio.putExtra("ANDROID_ID", androidID);
                                 intentInicio.putExtra("TELEFONO", telefono);
 
-
                                 pDialog.dismiss();
                                 startActivity(intentInicio);
-                                //Animación
-                                overridePendingTransition(R.animator.login_in,
-                                        R.animator.login_out);
+                                //Se quita la Animación porque se superpone con el dialog de configuración del gps.
+                               /* overridePendingTransition(R.animator.login_in,
+                                        R.animator.login_out);*/
                                 finish();
 
                             } else  if (resultJSON==2) {

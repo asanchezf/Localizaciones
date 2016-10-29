@@ -47,6 +47,8 @@
     <string name="alta_registro_repeat">Esa cuenta de usuario ya existe en nuestra Base de Datos</string>
     <string name="alta_usuario_error">No se ha podido dar de alta el usuario</string>
     <string name="localizacion_insertada">Tus datos de posicionamiento acaban de ser enviados al Servidor</string>
+    <string name="localizacion_insertada_desdeServicio">Tus datos de posicionamiento acaban de ser enviados al Servidor desde el Servicio</string>
+
     <string name="localizacion_error">La localización no pudo insertarse</string>
     <string name="gps_habilitado">GPS habilitado</string>
     <string name="gps_deshabilitado">GPS deshabilitado</string>
