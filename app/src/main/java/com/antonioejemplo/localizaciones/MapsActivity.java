@@ -152,7 +152,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_maps);
 
         ////UTILIZANDO TABS////////////////////////
         setContentView(R.layout.activity_inicio);
@@ -160,11 +159,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setSupportActionBar(toolbar);
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
-
-        //Gestionamos los permisos según la versión. A partir de Android M los permisos se gestionan también en ejecución
-        //permisosPorAplicacion();
-
 
         //Lista de la cuarta pestaña.
         /*lista=(RecyclerView)findViewById(R.id.lstLista);
@@ -222,9 +216,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             GpsNoHabilitado();
         }
 
-
+        //Cola de peticiones de Volley
         requestQueue = Volley.newRequestQueue(this);
-        //Location localizacion = manejador.getLastKnownLocation(proveedor);
 
         //Recogemos los datos enviados por la activity login
         Bundle bundle = getIntent().getExtras();
@@ -233,8 +226,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         email = bundle.getString("EMAIL");
         android_id = bundle.getString("ANDROID_ID");
         telefono = bundle.getString("TELEFONO");
-
-        //usuarioMapas="Pepe";
 
         Toast.makeText(getApplicationContext(), "Me alegro de verte... " + usuarioMapas, Toast.LENGTH_SHORT).show();
 
@@ -323,18 +314,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-      /*  mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(milocalizacion, zoom));//Probar Da error*/
-
-
-        /*final AdaptadorRecyclerView3 adaptador;
-        adaptador=new AdaptadorRecyclerView3(usuarios,context);
-
-        lista.setAdapter(adaptador);*/
-
 
         //Gestionamos los permisos según la versión. A partir de Android M los permisos se gestionan también en ejecución
         permisosPorAplicacion();
-
 
     }
 
@@ -347,21 +329,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 //1-La aplicación tiene permisos....
-                /*muestraProveedores();
-                *//*CRITERIOS PARA ELEGIR EL PROVEEDOR:SIN COSTE, QUE MUESTRE ALTITUD, Y QUE TENGA PRECISIÓN FINA. CON ESTOS
-                * SERÁ ELEGIDO AUTOMÁTICAMENTE EL PROVEEDOR A UTILIZAR POR EL PROPIO TERMINAL*//*
-                Criteria criterio = new Criteria();
-                criterio.setCostAllowed(false);
-                criterio.setAltitudeRequired(false);
-                criterio.setAccuracy(Criteria.ACCURACY_FINE);
-                proveedor = manejador.getBestProvider(criterio, true);
-                Log.v(LOGCAT, "Mejor proveedor: " + proveedor + "\n");
-                Log.v(LOGCAT, "Comenzamos con la última localización conocida:");
 
-                Location localizacion = manejador.getLastKnownLocation(proveedor);
-
-                muestraLocaliz(localizacion);
-                muestradireccion(localizacion);*/
                 utilizamosGps();
 
                 //Toast.makeText(this, "1 Permiso Concedido", Toast.LENGTH_SHORT).show();
@@ -376,38 +344,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         } else {//No es Android M o superior. Ejecutamos de manera normal porque el permiso ya viene dado en el Manifiest
 
-/*
-            muestraProveedores();
-        *//*CRITERIOS PARA ELEGIR EL PROVEEDOR:SIN COSTE, QUE MUESTRE ALTITUD, Y QUE TENGA PRECISIÓN FINA. CON ESTOS
-        * SERÁ ELEGIDO AUTOMÁTICAMENTE EL PROVEEDOR A UTILIZAR POR EL PROPIO TERMINAL*//*
-            Criteria criterio = new Criteria();
-            criterio.setCostAllowed(false);
-            criterio.setAltitudeRequired(false);
-            criterio.setAccuracy(Criteria.ACCURACY_FINE);
-            proveedor = manejador.getBestProvider(criterio, true);
-            Log.v(LOGCAT, "Mejor proveedor: " + proveedor + "\n");
-            Log.v(LOGCAT, "Comenzamos con la última localización conocida:");
-
-            Location localizacion = manejador.getLastKnownLocation(proveedor);
-            muestraLocaliz(localizacion);
-            muestradireccion(localizacion);*/
             utilizamosGps();
         }
 
-
-    }
-
-    public void actionSnackbar(View view) {
-        Snackbar.make(view, "Para que la aplicación funcione correctamente es necesario tener activado el permiso para poder utilizar el GPS.", Snackbar.LENGTH_INDEFINITE)
-                .setAction("OK", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        ActivityCompat.requestPermissions(MapsActivity.this,
-                                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                SOLICITUD_ACCESS_FINE_LOCATION);
-                    }
-                })
-                .show();
 
     }
 
@@ -436,23 +375,31 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
 
-    private void explicarUsoPermiso() {
-        //PARA CONTROLAR LOS PERMISOS EN ANDROID M Y POSTERIORES. EL FLUJO NO ES DEL TODO CORRECCTO. SE SUPORPONEN LOS ALERDIALOG A LA EJECUCIÓN DE LA APP
+        //Si se preguntara por más permisos el resultado se gestionaría desde aquí.
+        if (requestCode == SOLICITUD_ACCESS_FINE_LOCATION) {//6-Se ha concedido los permisos... procedemos a ejecutar el proceso
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-        //Este IF es necesario para saber si el usuario ha marcado o no la casilla [] No volver a preguntar
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-            Toast.makeText(this, "Para que la aplicación funcione correctamente es necesario" +
-                    "tener activado el permiso para poder utilizar el GPS", Toast.LENGTH_LONG).show();
-            //Explicarle al usuario porque necesitas el permiso (Opcional)
-            alertDialogBasico();
+                utilizamosGps();
+
+            } else {//7-NO se han concedido los permisos. No se puede ejecutar el proceso. Se le informa de ello al usuario.
+
+                /*Snackbar.make(vista, "Sin el permiso, no puedo realizar la" +
+                        "acción", Snackbar.LENGTH_SHORT).show();*/
+                //1-Seguimos el proceso de ejecucion sin esta accion: Esto lo recomienda Google
+                //2-Cancelamos el proceso actual
+                //3-Salimos de la aplicacion
+                Toast.makeText(this, "No se ha concedido el permiso necesario para que la aplicación utilice el GPS del dispositivo.", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
 
+    //<editor-fold desc="ejemplo solicitar permisos en Android. Forma antigua.NO se utiliza">
     private void solicitarPermiso() {
-
-//PARA CONTROLAR LOS PERMISOS EN ANDROID M Y POSTERIORES. EL FLUJO NO ES DEL TODO CORRECCTO. SE SUPORPONEN LOS ALERDIALOG A LA EJECUCIÓN DE LA APP
+    //PARA CONTROLAR LOS PERMISOS EN ANDROID M Y POSTERIORES. EL FLUJO NO ES DEL TODO CORRECCTO. SE SUPORPONEN LOS ALERDIALOG A LA EJECUCIÓN DE LA APP
         //Pedimos el permiso o los permisos con un cuadro de dialogo del sistema
 
         if (alertDialogBasico()) {
@@ -464,7 +411,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
     }
+    //</editor-fold>
 
+    //<editor-fold desc="Construye AlertDialog para el manejo de los permisos. NO SE UTILIZA">
     public boolean alertDialogBasico() {
 
 //PARA CONTROLAR LOS PERMISOS EN ANDROID M Y POSTERIORES. EL FLUJO NO ES DEL TODO CORRECCTO. SE SUPORPONEN LOS ALERDIALOG A LA EJECUCIÓN DE LA APP
@@ -478,55 +427,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
 
-
             }
-
         });
 
-
         builder.show();
-
         return true;
     }
+    //</editor-fold>
 
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String[] permissions, int[] grantResults) {
-        //6-Se ha concedido los permisos... procedemos a ejecutar el proceso
-        //Si se preguntara por más permisos el resultado se gestionaría desde aquí.
-        if (requestCode == SOLICITUD_ACCESS_FINE_LOCATION) {
-            if (grantResults.length == 1 &&
-                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                /*muestraProveedores();
-                *//*CRITERIOS PARA ELEGIR EL PROVEEDOR:SIN COSTE, QUE MUESTRE ALTITUD, Y QUE TENGA PRECISIÓN FINA. CON ESTOS
-                * SERÁ ELEGIDO AUTOMÁTICAMENTE EL PROVEEDOR A UTILIZAR POR EL PROPIO TERMINAL*//*
-                Criteria criterio = new Criteria();
-                criterio.setCostAllowed(false);
-                criterio.setAltitudeRequired(false);
-                criterio.setAccuracy(Criteria.ACCURACY_FINE);
-                proveedor = manejador.getBestProvider(criterio, true);
-                Log.v(LOGCAT, "Mejor proveedor: " + proveedor + "\n");
-                Log.v(LOGCAT, "Comenzamos con la última localización conocida:");
-
-                Location localizacion = manejador.getLastKnownLocation(proveedor);
-                muestraLocaliz(localizacion);
-                muestradireccion(localizacion);
-                traerMarcadoresNew();//NO ESTA PROBADO*/
-                utilizamosGps();
-
-            } else {
-                //7-NO se han concedido los permisos. No se puede ejecutar el proceso. Se le informa de ello al usuario.
-                /*Snackbar.make(vista, "Sin el permiso, no puedo realizar la" +
-                        "acción", Snackbar.LENGTH_SHORT).show();*/
-                //1-Seguimos el proceso de ejecucion sin esta accion: Esto lo recomienda Google
-                //2-Cancelamos el proceso actual
-                //3-Salimos de la aplicacion
-                Toast.makeText(this, "No se ha concedido el permiso necesario para que la aplicación utilice el GPS del dispositivo.", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
 
 
     private void utilizamosGps() {
@@ -542,13 +452,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Log.v(LOGCAT, "Comenzamos con la última localización conocida:");
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+            //NO HACEMOS NADA. A ESTE NIVEL EL PERMISO DE USO DE GPS YA ESTÁ APROVADO POR EL USUARIO.
             return;
         }
         Location localizacion = manejador.getLastKnownLocation(proveedor);
@@ -561,57 +465,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
 
-
-/*    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        //PARA CONTROLAR LOS PERMISOS EN ANDROID M Y POSTERIORES. EL FLUJO NO ES DEL TODO CORRECCTO. SE SUPORPONEN LOS ALERDIALOG A LA EJECUCIÓN DE LA APP
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        */
-
-    /**
-     * Si hay diferentes permisos solicitando permisos de la aplicacion, aqui habria varios IF
-     *//*
-        if (requestCode == SOLICITUD_ACCESS_FINE_LOCATION) {
-
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                //Realizamos la accion
-
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    return;
-                }
-
-                muestraProveedores();
-                *//*CRITERIOS PARA ELEGIR EL PROVEEDOR:SIN COSTE, QUE MUESTRE ALTITUD, Y QUE TENGA PRECISIÓN FINA. CON ESTOS
-                * SERÁ ELEGIDO AUTOMÁTICAMENTE EL PROVEEDOR A UTILIZAR POR EL PROPIO TERMINAL*//*
-                Criteria criterio = new Criteria();
-                criterio.setCostAllowed(false);
-                criterio.setAltitudeRequired(false);
-                criterio.setAccuracy(Criteria.ACCURACY_FINE);
-                proveedor = manejador.getBestProvider(criterio, true);
-                Log.v(LOGCAT, "Mejor proveedor: " + proveedor + "\n");
-                Log.v(LOGCAT, "Comenzamos con la última localización conocida:");
-
-                Location localizacion = manejador.getLastKnownLocation(proveedor);
-                muestraLocaliz(localizacion);
-                muestradireccion(localizacion);
-                traerMarcadoresNew();//NO ESTA PROBADO
-                //Toast.makeText(this, "3.1 Permiso Concedido", Toast.LENGTH_SHORT).show();
-            } else {
-                //1-Seguimos el proceso de ejecucion sin esta accion: Esto lo recomienda Google
-                //2-Cancelamos el proceso actual
-                //3-Salimos de la aplicacion
-                Toast.makeText(this, "No se ha concedido el permiso necesario para que la aplicación utilice el GPS del dispositivo.", Toast.LENGTH_SHORT).show();
-                return;
-            }
-        }
-    }*/
     private void GpsNoHabilitado() {
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -689,6 +542,283 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         return false;
     }
+
+    public void traerMarcadoresNew() {
+        String tag_json_obj_actual = "json_obj_req_actual";
+        final String KEY_USERNAME_MARCADOR = "Usuario";
+        final String LOGIN_URL = "http://petty.hol.es/obtener_todas_por_usuario.php";
+
+        Log.d(LOGCAT, "Valor de usuarioMaps_KEY " + KEY_USERNAME_MARCADOR);
+        Log.d(LOGCAT, "Valor de usuarioMaps_Valor " + usuarioMapas);
+
+        String uri = String.format(patron_Busqueda_Url);
+
+
+        final ProgressDialog pDialog = new ProgressDialog(this);
+        pDialog.setMessage("Obteniedo posiciones espera por favor...");
+        pDialog.show();
+
+        if (mMap !=null){
+            mMap.clear();
+        }
+
+
+        StringRequest stringRequest = new StringRequest(metodo_Get_POST, uri,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        //pDialog.hide();
+                        pDialog.dismiss();
+                        String usuario = "";
+                        String poblacion = "";
+                        String calle = "";
+                        String numero = "";
+                        Double latitud = null;
+                        Double longitud = null;
+                        int velocidad = 0;
+
+                        String fechaHora = "";
+                        String telefonomarcador = "";
+
+
+                        try {
+
+                            //ES UN STRINGREQUEST---HAY QUE CREAR PRIMERO UN JSONObject PARA PODER EXTRAER TODO....
+                            JSONObject json_Object = new JSONObject(response.toString());
+
+                            //Sacamos el valor de estado
+                            int resultJSON = Integer.parseInt(json_Object.getString("estado"));
+                            Log.v(LOGTAG, "Valor de estado: " + resultJSON);
+
+
+                            JSONArray json_array = json_Object.getJSONArray("alumnos");
+                            //JSONArray json_array = response.getJSONArray("alumnos");
+                            for (int z = 0; z < json_array.length(); z++) {
+                                //usuario = json_array.getJSONObject(z).getString("Usuario");
+
+                                usuario = json_array.getJSONObject(z).getString("Username");
+                                poblacion = json_array.getJSONObject(z).getString("Poblacion");
+                                calle = json_array.getJSONObject(z).getString("Calle");
+                                numero = json_array.getJSONObject(z).getString("Numero");
+                                longitud = json_array.getJSONObject(z).getDouble("Longitud");
+                                latitud = json_array.getJSONObject(z).getDouble("Latitud");
+
+
+                                //velocidad = (int) conversionVelocidad((int) json_array.getJSONObject(z).getDouble("Velocidad"));
+                                velocidad = (int) conversionVelocidad(json_array.getJSONObject(z).getDouble("Velocidad"));
+                                fechaHora = json_array.getJSONObject(z).getString("FechaHora");
+                                milocalizacion = new LatLng(latitud, longitud);
+
+
+                                //CASO 1--http://petty.hol.es/obtener_localizaciones.php
+                                if (patron_Busqueda_Url == "http://petty.hol.es/obtener_localizaciones.php") {
+
+                                    //mMap.clear();
+                                    telefonomarcador = json_array.getJSONObject(z).getString("Telefono");
+                                    telefonowsp = telefonomarcador;
+
+
+                                    if (usuario.equals("Antonio")) {
+                                        MarkerOptions markerOptions =
+                                                new MarkerOptions()
+                                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.placeholderotro))
+                                                        //.icon(BitmapDescriptorFactory.fromBitmap(writeTextOnDrawable(R.drawable.placeholderotro, "your text goes here")
+                                                        .anchor(0.0f, 1.0f)
+                                                        .title(usuario)
+                                                        .snippet("Día: " + fechaHora + " - Teléf: " + telefonomarcador)
+
+                                                        .draggable(true)
+                                                        //.flat(true)
+                                                        .position(milocalizacion);
+
+                                        Marker marker = mMap.addMarker(markerOptions);
+                                        //marker.isInfoWindowShown();
+
+
+                                    } else if (usuario.equalsIgnoreCase("Susana")) {
+
+                                        MarkerOptions markerOptions =
+                                                new MarkerOptions()
+                                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.icono_situacion))
+                                                        .anchor(0.0f, 1.0f)
+                                                        .title(usuario)
+                                                        .snippet("Día: " + fechaHora + " - Teléf: " + telefonomarcador)
+                                                        .draggable(true)
+                                                        .position(milocalizacion)
+                                                        .flat(true);
+
+                                        Marker marker = mMap.addMarker(markerOptions);
+                                        //marker.showInfoWindow();
+
+                                    } else if (usuario.equalsIgnoreCase("Dario")) {
+
+                                        MarkerOptions markerOptions =
+                                                new MarkerOptions()
+                                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.icono_ruta))
+                                                        .anchor(0.0f, 1.0f)
+                                                        .title(usuario)
+                                                        .snippet("Día: " + fechaHora + " - Teléf: " + telefonomarcador)
+                                                        .draggable(true)
+                                                        .position(milocalizacion)
+                                                        .flat(true);
+
+
+                                        Marker marker = mMap.addMarker(markerOptions);
+                                        //marker.showInfoWindow();
+
+                                    }
+
+                                    //USUARIOS QUE NO TIENEN ICONO PROPIO
+                                    else {
+                                        MarkerOptions markerOptions =
+                                                new MarkerOptions()
+                                                        //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.placeholderbis))
+                                                        .anchor(0.0f, 1.0f)
+                                                        .title(usuario)
+                                                        .snippet("Día: " + fechaHora + " - Teléf: " + telefonomarcador)
+                                                        .draggable(true)
+                                                        .position(milocalizacion)
+                                                        .flat(true);
+
+                                        Marker marker = mMap.addMarker(markerOptions);
+
+
+                                    }//Fin else usuarios SIN ICONO PROPIO
+
+
+                                    ////AQUI/////
+
+                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(milocalizacion, zoom));
+
+                                }//Fin patron_Busqueda_Url == "http://petty.hol.es/obtener_localizaciones.php"--PRIMERA PESTAÑA
+
+
+                                //CASO 2-Ponemos marcadores para todas las posiciones de todos: ponemos marcadores por defecto
+                                else if (metodo_Get_POST == Request.Method.GET && patron_Busqueda_Url == "http://petty.hol.es/obtener_localizaciones_todas.php") {
+
+                                    //mMap.clear();
+                                    if (usuario.equals("Antonio")) {
+                                        MarkerOptions markerOptions =
+                                                new MarkerOptions()
+                                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.placeholderotro))
+                                                        .anchor(0.0f, 1.0f)
+                                                        .title(usuario)
+                                                        .snippet(calle + " " + numero + "/-/" + fechaHora + "/-/" + velocidad + " KM/H.")
+
+                                                        //.draggable(true)
+                                                        //.flat(true)
+                                                        .position(milocalizacion);
+
+                                        Marker marker = mMap.addMarker(markerOptions);
+                                        // marker.showInfoWindow();
+
+                                    } else if (usuario.equalsIgnoreCase("Susana")) {
+
+
+                                        MarkerOptions markerOptions =
+                                                new MarkerOptions()
+                                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.icono_situacion))
+                                                        .anchor(0.0f, 1.0f)
+                                                        .title(usuario)
+                                                        .snippet(calle + " " + numero + "/-/" + fechaHora + "/-/" + velocidad + " KM/H.")
+                                                        //.draggable(true)
+                                                        .position(milocalizacion)
+                                                        .flat(true);
+
+                                        Marker marker = mMap.addMarker(markerOptions);
+                                        //marker.showInfoWindow();
+
+                                    } else if (usuario.equalsIgnoreCase("Dario")) {
+
+
+                                        MarkerOptions markerOptions =
+                                                new MarkerOptions()
+                                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.icono_ruta))
+                                                        .anchor(0.0f, 1.0f)
+                                                        .title(usuario)
+                                                        .snippet(calle + " " + numero + "/-/" + fechaHora + "/-/" + velocidad + " KM/H.")
+                                                        //.draggable(true)
+                                                        .position(milocalizacion)
+                                                        .flat(true);
+
+
+                                        Marker marker = mMap.addMarker(markerOptions);
+                                        //marker.showInfoWindow();
+
+                                    } else {
+                                        //Usuarios que no están predefinidos
+
+
+                                        mMap.addMarker(new MarkerOptions()
+                                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.placeholdermas))
+                                                .anchor(0.0f, 1.0f)
+                                                .title(usuario)
+                                                .snippet(calle + " " + numero + "/-/" + fechaHora + "/-/" + velocidad + " KM/H.")
+                                                .position(milocalizacion));
+                                    }
+
+
+                                    ////AQUI/////
+
+                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(milocalizacion, zoom));
+
+                                }
+
+                                //CASO 3-Ponemos marcadores para todas las posiciones del usuario que se ha logado: ponemos marcadores violetas y cambiamos el snipped
+                                else if (metodo_Get_POST == Request.Method.POST) {
+                                    // mMap.clear();
+                                    mMap.addMarker(new MarkerOptions()
+                                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.placeholder))
+                                            .anchor(0.0f, 1.0f)
+                                            .title(usuario)
+                                            .snippet(calle + " " + numero + "/-/" + fechaHora + "/Vel/" + velocidad + " KM/H.")
+                                            .position(milocalizacion));
+
+                                }
+
+                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(milocalizacion, zoom));
+
+                            }//fin del else de marcadores
+
+                            //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(milocalizacion, zoom));
+
+                            //Fin del JsonArray
+
+
+                            // }//Fin del response
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Log.d(LOGTAG, "Error Respuesta en JSON: ");
+                        }
+
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d(LOGTAG, "Error Respuesta en JSON leyendo MarcadoresPost: " + error.getMessage());
+                        VolleyLog.d(LOGTAG, "Error: " + error.getMessage());
+                        Toast.makeText(context, "Se ha producido un error leyendo MarcadoresPost " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> map = new HashMap<String, String>();
+                map.put(KEY_USERNAME_MARCADOR, usuarioMapas);
+                return map;
+            }
+        };
+
+
+        // Añadir petición a la cola
+        AppController.getInstance().addToRequestQueue(stringRequest, tag_json_obj_actual);
+
+
+    }
+
 
 
     public class TraerMarcadoresAsyncTacks extends AsyncTask<String, Void, String> {
@@ -1062,281 +1192,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-    public void traerMarcadoresNew() {
-        String tag_json_obj_actual = "json_obj_req_actual";
-        final String KEY_USERNAME_MARCADOR = "Usuario";
-        final String LOGIN_URL = "http://petty.hol.es/obtener_todas_por_usuario.php";
 
-        Log.d(LOGCAT, "Valor de usuarioMaps_KEY " + KEY_USERNAME_MARCADOR);
-        Log.d(LOGCAT, "Valor de usuarioMaps_Valor " + usuarioMapas);
-
-        String uri = String.format(patron_Busqueda_Url);
-
-
-        final ProgressDialog pDialog = new ProgressDialog(this);
-        pDialog.setMessage("Obteniedo posiciones espera por favor...");
-        pDialog.show();
-
-        if (mMap !=null){
-        mMap.clear();
-        }
-
-
-        StringRequest stringRequest = new StringRequest(metodo_Get_POST, uri,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        //pDialog.hide();
-                        pDialog.dismiss();
-                        String usuario = "";
-                        String poblacion = "";
-                        String calle = "";
-                        String numero = "";
-                        Double latitud = null;
-                        Double longitud = null;
-                        int velocidad = 0;
-
-                        String fechaHora = "";
-                        String telefonomarcador = "";
-
-
-                        try {
-
-                            //ES UN STRINGREQUEST---HAY QUE CREAR PRIMERO UN JSONObject PARA PODER EXTRAER TODO....
-                            JSONObject json_Object = new JSONObject(response.toString());
-
-                            //Sacamos el valor de estado
-                            int resultJSON = Integer.parseInt(json_Object.getString("estado"));
-                            Log.v(LOGTAG, "Valor de estado: " + resultJSON);
-
-
-                            JSONArray json_array = json_Object.getJSONArray("alumnos");
-                            //JSONArray json_array = response.getJSONArray("alumnos");
-                            for (int z = 0; z < json_array.length(); z++) {
-                                //usuario = json_array.getJSONObject(z).getString("Usuario");
-
-                                usuario = json_array.getJSONObject(z).getString("Username");
-                                poblacion = json_array.getJSONObject(z).getString("Poblacion");
-                                calle = json_array.getJSONObject(z).getString("Calle");
-                                numero = json_array.getJSONObject(z).getString("Numero");
-                                longitud = json_array.getJSONObject(z).getDouble("Longitud");
-                                latitud = json_array.getJSONObject(z).getDouble("Latitud");
-
-
-                                //velocidad = (int) conversionVelocidad((int) json_array.getJSONObject(z).getDouble("Velocidad"));
-                                velocidad = (int) conversionVelocidad(json_array.getJSONObject(z).getDouble("Velocidad"));
-                                fechaHora = json_array.getJSONObject(z).getString("FechaHora");
-                                milocalizacion = new LatLng(latitud, longitud);
-
-
-                                //CASO 1--http://petty.hol.es/obtener_localizaciones.php
-                                if (patron_Busqueda_Url == "http://petty.hol.es/obtener_localizaciones.php") {
-
-                                    //mMap.clear();
-                                    telefonomarcador = json_array.getJSONObject(z).getString("Telefono");
-                                    telefonowsp = telefonomarcador;
-
-
-                                    if (usuario.equals("Antonio")) {
-                                        MarkerOptions markerOptions =
-                                                new MarkerOptions()
-                                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.placeholderotro))
-                                                        //.icon(BitmapDescriptorFactory.fromBitmap(writeTextOnDrawable(R.drawable.placeholderotro, "your text goes here")
-                                                        .anchor(0.0f, 1.0f)
-                                                        .title(usuario)
-                                                        .snippet("Día: " + fechaHora + " - Teléf: " + telefonomarcador)
-
-                                                        .draggable(true)
-                                                        //.flat(true)
-                                                        .position(milocalizacion);
-
-                                        Marker marker = mMap.addMarker(markerOptions);
-                                        //marker.isInfoWindowShown();
-
-
-                                    } else if (usuario.equalsIgnoreCase("Susana")) {
-
-                                        MarkerOptions markerOptions =
-                                                new MarkerOptions()
-                                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.icono_situacion))
-                                                        .anchor(0.0f, 1.0f)
-                                                        .title(usuario)
-                                                        .snippet("Día: " + fechaHora + " - Teléf: " + telefonomarcador)
-                                                        .draggable(true)
-                                                        .position(milocalizacion)
-                                                        .flat(true);
-
-                                        Marker marker = mMap.addMarker(markerOptions);
-                                        //marker.showInfoWindow();
-
-                                    } else if (usuario.equalsIgnoreCase("Dario")) {
-
-                                        MarkerOptions markerOptions =
-                                                new MarkerOptions()
-                                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.icono_ruta))
-                                                        .anchor(0.0f, 1.0f)
-                                                        .title(usuario)
-                                                        .snippet("Día: " + fechaHora + " - Teléf: " + telefonomarcador)
-                                                        .draggable(true)
-                                                        .position(milocalizacion)
-                                                        .flat(true);
-
-
-                                        Marker marker = mMap.addMarker(markerOptions);
-                                        //marker.showInfoWindow();
-
-                                    }
-
-                                    //USUARIOS QUE NO TIENEN ICONO PROPIO
-                                    else {
-                                        MarkerOptions markerOptions =
-                                                new MarkerOptions()
-                                                        //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.placeholderbis))
-                                                        .anchor(0.0f, 1.0f)
-                                                        .title(usuario)
-                                                        .snippet("Día: " + fechaHora + " - Teléf: " + telefonomarcador)
-                                                        .draggable(true)
-                                                        .position(milocalizacion)
-                                                        .flat(true);
-
-                                        Marker marker = mMap.addMarker(markerOptions);
-
-
-                                    }//Fin else usuarios SIN ICONO PROPIO
-
-
-                                    ////AQUI/////
-
-                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(milocalizacion, zoom));
-
-                                }//Fin patron_Busqueda_Url == "http://petty.hol.es/obtener_localizaciones.php"--PRIMERA PESTAÑA
-
-
-                                //CASO 2-Ponemos marcadores para todas las posiciones de todos: ponemos marcadores por defecto
-                                else if (metodo_Get_POST == Request.Method.GET && patron_Busqueda_Url == "http://petty.hol.es/obtener_localizaciones_todas.php") {
-
-                                    //mMap.clear();
-                                    if (usuario.equals("Antonio")) {
-                                        MarkerOptions markerOptions =
-                                                new MarkerOptions()
-                                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.placeholderotro))
-                                                        .anchor(0.0f, 1.0f)
-                                                        .title(usuario)
-                                                        .snippet(calle + " " + numero + "/-/" + fechaHora + "/-/" + velocidad + " KM/H.")
-
-                                                        //.draggable(true)
-                                                        //.flat(true)
-                                                        .position(milocalizacion);
-
-                                        Marker marker = mMap.addMarker(markerOptions);
-                                        // marker.showInfoWindow();
-
-                                    } else if (usuario.equalsIgnoreCase("Susana")) {
-
-
-                                        MarkerOptions markerOptions =
-                                                new MarkerOptions()
-                                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.icono_situacion))
-                                                        .anchor(0.0f, 1.0f)
-                                                        .title(usuario)
-                                                        .snippet(calle + " " + numero + "/-/" + fechaHora + "/-/" + velocidad + " KM/H.")
-                                                        //.draggable(true)
-                                                        .position(milocalizacion)
-                                                        .flat(true);
-
-                                        Marker marker = mMap.addMarker(markerOptions);
-                                        //marker.showInfoWindow();
-
-                                    } else if (usuario.equalsIgnoreCase("Dario")) {
-
-
-                                        MarkerOptions markerOptions =
-                                                new MarkerOptions()
-                                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.icono_ruta))
-                                                        .anchor(0.0f, 1.0f)
-                                                        .title(usuario)
-                                                        .snippet(calle + " " + numero + "/-/" + fechaHora + "/-/" + velocidad + " KM/H.")
-                                                        //.draggable(true)
-                                                        .position(milocalizacion)
-                                                        .flat(true);
-
-
-                                        Marker marker = mMap.addMarker(markerOptions);
-                                        //marker.showInfoWindow();
-
-                                    } else {
-                                        //Usuarios que no están predefinidos
-
-
-                                        mMap.addMarker(new MarkerOptions()
-                                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.placeholdermas))
-                                                .anchor(0.0f, 1.0f)
-                                                .title(usuario)
-                                                .snippet(calle + " " + numero + "/-/" + fechaHora + "/-/" + velocidad + " KM/H.")
-                                                .position(milocalizacion));
-                                    }
-
-
-                                    ////AQUI/////
-
-                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(milocalizacion, zoom));
-
-                                }
-
-                                //CASO 3-Ponemos marcadores para todas las posiciones del usuario que se ha logado: ponemos marcadores violetas y cambiamos el snipped
-                                else if (metodo_Get_POST == Request.Method.POST) {
-                                    // mMap.clear();
-                                    mMap.addMarker(new MarkerOptions()
-                                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.placeholder))
-                                            .anchor(0.0f, 1.0f)
-                                            .title(usuario)
-                                            .snippet(calle + " " + numero + "/-/" + fechaHora + "/Vel/" + velocidad + " KM/H.")
-                                            .position(milocalizacion));
-
-                                }
-
-                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(milocalizacion, zoom));
-
-                            }//fin del else de marcadores
-
-                            //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(milocalizacion, zoom));
-
-                            //Fin del JsonArray
-
-
-                            // }//Fin del response
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Log.d(LOGTAG, "Error Respuesta en JSON: ");
-                        }
-
-
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d(LOGTAG, "Error Respuesta en JSON leyendo MarcadoresPost: " + error.getMessage());
-                        VolleyLog.d(LOGTAG, "Error: " + error.getMessage());
-                        Toast.makeText(context, "Se ha producido un error leyendo MarcadoresPost " + error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                }) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> map = new HashMap<String, String>();
-                map.put(KEY_USERNAME_MARCADOR, usuarioMapas);
-                return map;
-            }
-        };
-
-
-        // Añadir petición a la cola
-        AppController.getInstance().addToRequestQueue(stringRequest, tag_json_obj_actual);
-
-
-    }
 
 
     public void traerMarcadores() {
