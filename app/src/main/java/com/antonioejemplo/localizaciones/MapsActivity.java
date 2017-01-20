@@ -22,13 +22,16 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.TabHost;
 import android.widget.Toast;
 
@@ -76,6 +79,8 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import volley.AppController;
+
+import static com.antonioejemplo.localizaciones.R.id.tab1;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener, GoogleMap.OnMarkerDragListener, GoogleMap.OnMarkerClickListener {//FragmentActivity
 
@@ -144,7 +149,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private boolean salir = false;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -158,10 +162,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
 
-
         //Gestionamos los permisos según la versión. A partir de Android M los permisos se gestionan también en ejecución
         //permisosPorAplicacion();
-
 
 
         //Lista de la cuarta pestaña.
@@ -181,7 +183,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         tabs.setup();
 
         TabHost.TabSpec spec = tabs.newTabSpec("mitab1");
-        spec.setContent(R.id.tab1);//Última localización de todos
+        spec.setContent(tab1);//Última localización de todos
         spec.setIndicator(res.getString(R.string.info_tab1),
                 res.getDrawable(R.drawable.icono_ruta));
 
@@ -210,7 +212,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         //manejador es el LocationManager
         manejador = (LocationManager) getSystemService(LOCATION_SERVICE);
-
 
 
         //PANTALLA SIEMPRE ENCENDIDA...
@@ -338,7 +339,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-    private void permisosPorAplicacion(){
+    private void permisosPorAplicacion() {
 
         //Gestionamos los permisos según la versión. A partir de Android M algnos permisos catalogados como peligrosos se gestionan en tiempo de ejecución
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -346,9 +347,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 //1-La aplicación tiene permisos....
-                muestraProveedores();
-                /*CRITERIOS PARA ELEGIR EL PROVEEDOR:SIN COSTE, QUE MUESTRE ALTITUD, Y QUE TENGA PRECISIÓN FINA. CON ESTOS
-                * SERÁ ELEGIDO AUTOMÁTICAMENTE EL PROVEEDOR A UTILIZAR POR EL PROPIO TERMINAL*/
+                /*muestraProveedores();
+                *//*CRITERIOS PARA ELEGIR EL PROVEEDOR:SIN COSTE, QUE MUESTRE ALTITUD, Y QUE TENGA PRECISIÓN FINA. CON ESTOS
+                * SERÁ ELEGIDO AUTOMÁTICAMENTE EL PROVEEDOR A UTILIZAR POR EL PROPIO TERMINAL*//*
                 Criteria criterio = new Criteria();
                 criterio.setCostAllowed(false);
                 criterio.setAltitudeRequired(false);
@@ -360,24 +361,25 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Location localizacion = manejador.getLastKnownLocation(proveedor);
 
                 muestraLocaliz(localizacion);
-                muestradireccion(localizacion);
+                muestradireccion(localizacion);*/
+                utilizamosGps();
 
-                Toast.makeText(this, "1 Permiso Concedido", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "1 Permiso Concedido", Toast.LENGTH_SHORT).show();
 
             } else {//No tiene permisos
 
                 //explicarUsoPermiso();
-                solicitarPermiso();
+                //solicitarPermiso();
 
-                //solicitarPermisoGPS(this);
+                solicitarPermisoGPS();
             }
 
         } else {//No es Android M o superior. Ejecutamos de manera normal porque el permiso ya viene dado en el Manifiest
 
-
+/*
             muestraProveedores();
-        /*CRITERIOS PARA ELEGIR EL PROVEEDOR:SIN COSTE, QUE MUESTRE ALTITUD, Y QUE TENGA PRECISIÓN FINA. CON ESTOS
-        * SERÁ ELEGIDO AUTOMÁTICAMENTE EL PROVEEDOR A UTILIZAR POR EL PROPIO TERMINAL*/
+        *//*CRITERIOS PARA ELEGIR EL PROVEEDOR:SIN COSTE, QUE MUESTRE ALTITUD, Y QUE TENGA PRECISIÓN FINA. CON ESTOS
+        * SERÁ ELEGIDO AUTOMÁTICAMENTE EL PROVEEDOR A UTILIZAR POR EL PROPIO TERMINAL*//*
             Criteria criterio = new Criteria();
             criterio.setCostAllowed(false);
             criterio.setAltitudeRequired(false);
@@ -388,43 +390,52 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             Location localizacion = manejador.getLastKnownLocation(proveedor);
             muestraLocaliz(localizacion);
-            muestradireccion(localizacion);
+            muestradireccion(localizacion);*/
+            utilizamosGps();
         }
-
-
-
 
 
     }
 
+    public void actionSnackbar(View view) {
+        Snackbar.make(view, "Para que la aplicación funcione correctamente es necesario tener activado el permiso para poder utilizar el GPS.", Snackbar.LENGTH_INDEFINITE)
+                .setAction("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ActivityCompat.requestPermissions(MapsActivity.this,
+                                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                SOLICITUD_ACCESS_FINE_LOCATION);
+                    }
+                })
+                .show();
 
+    }
 
-    /*private void solicitarPermisoGPS(MapsActivity mapsActivity) {
+    private void solicitarPermisoGPS() {
 
         if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                Manifest.permission.WRITE_CALL_LOG)) {
+                Manifest.permission.ACCESS_FINE_LOCATION)) {
             //4-Pequeña explicación de para qué queremos los permisos
-            Snackbar.make(findViewById(R.id.mapa), "Para que la aplicación funcione correctamente es necesario tener activado el permiso para poder utilizar el GPS.")
-                    .Snackbar.LENGTH_INDEFINITE
+            LinearLayout contenedor = (LinearLayout) findViewById(R.id.contenedor);
+            Snackbar.make(contenedor, "Para que la aplicación funcione correctamente es necesario "
+                    + " tener activado el permiso para poder utilizar el GPS.", Snackbar.LENGTH_INDEFINITE)
                     .setAction("OK", new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             ActivityCompat.requestPermissions(MapsActivity.this,
-                                    new String[]{ Manifest.permission. WRITE_CALL_LOG},
-                                    SOLICITUD_PERMISO_WRITE_CALL_LOG);
+                                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                    SOLICITUD_ACCESS_FINE_LOCATION);
                         }
                     })
                     .show();
-
-
-
         } else {
             //5-Se muetra cuadro de diálogo predeterminado del sistema para que concedamos o denegemos el permiso
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.WRITE_CALL_LOG},
-                    SOLICITUD_PERMISO_WRITE_CALL_LOG);
+                    SOLICITUD_ACCESS_FINE_LOCATION);
         }
-    }*/
+    }
+
 
     private void explicarUsoPermiso() {
         //PARA CONTROLAR LOS PERMISOS EN ANDROID M Y POSTERIORES. EL FLUJO NO ES DEL TODO CORRECCTO. SE SUPORPONEN LOS ALERDIALOG A LA EJECUCIÓN DE LA APP
@@ -464,7 +475,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         builder.setMessage("La aplicación no tiene permisos para utilizar el GPS");
 
 
-
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
 
@@ -479,13 +489,88 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return true;
     }
 
+
     @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions, int[] grantResults) {
+        //6-Se ha concedido los permisos... procedemos a ejecutar el proceso
+        //Si se preguntara por más permisos el resultado se gestionaría desde aquí.
+        if (requestCode == SOLICITUD_ACCESS_FINE_LOCATION) {
+            if (grantResults.length == 1 &&
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                /*muestraProveedores();
+                *//*CRITERIOS PARA ELEGIR EL PROVEEDOR:SIN COSTE, QUE MUESTRE ALTITUD, Y QUE TENGA PRECISIÓN FINA. CON ESTOS
+                * SERÁ ELEGIDO AUTOMÁTICAMENTE EL PROVEEDOR A UTILIZAR POR EL PROPIO TERMINAL*//*
+                Criteria criterio = new Criteria();
+                criterio.setCostAllowed(false);
+                criterio.setAltitudeRequired(false);
+                criterio.setAccuracy(Criteria.ACCURACY_FINE);
+                proveedor = manejador.getBestProvider(criterio, true);
+                Log.v(LOGCAT, "Mejor proveedor: " + proveedor + "\n");
+                Log.v(LOGCAT, "Comenzamos con la última localización conocida:");
+
+                Location localizacion = manejador.getLastKnownLocation(proveedor);
+                muestraLocaliz(localizacion);
+                muestradireccion(localizacion);
+                traerMarcadoresNew();//NO ESTA PROBADO*/
+                utilizamosGps();
+
+            } else {
+                //7-NO se han concedido los permisos. No se puede ejecutar el proceso. Se le informa de ello al usuario.
+                /*Snackbar.make(vista, "Sin el permiso, no puedo realizar la" +
+                        "acción", Snackbar.LENGTH_SHORT).show();*/
+                //1-Seguimos el proceso de ejecucion sin esta accion: Esto lo recomienda Google
+                //2-Cancelamos el proceso actual
+                //3-Salimos de la aplicacion
+                Toast.makeText(this, "No se ha concedido el permiso necesario para que la aplicación utilice el GPS del dispositivo.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+
+    private void utilizamosGps() {
+        muestraProveedores();
+                /*CRITERIOS PARA ELEGIR EL PROVEEDOR:SIN COSTE, QUE MUESTRE ALTITUD, Y QUE TENGA PRECISIÓN FINA. CON ESTOS
+                * SERÁ ELEGIDO AUTOMÁTICAMENTE EL PROVEEDOR A UTILIZAR POR EL PROPIO TERMINAL*/
+        Criteria criterio = new Criteria();
+        criterio.setCostAllowed(false);
+        criterio.setAltitudeRequired(false);
+        criterio.setAccuracy(Criteria.ACCURACY_FINE);
+        proveedor = manejador.getBestProvider(criterio, true);
+        Log.v(LOGCAT, "Mejor proveedor: " + proveedor + "\n");
+        Log.v(LOGCAT, "Comenzamos con la última localización conocida:");
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        Location localizacion = manejador.getLastKnownLocation(proveedor);
+        muestraLocaliz(localizacion);
+        muestradireccion(localizacion);
+        traerMarcadoresNew();//NO ESTA PROBADO
+
+
+    }
+
+
+
+
+/*    @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         //PARA CONTROLAR LOS PERMISOS EN ANDROID M Y POSTERIORES. EL FLUJO NO ES DEL TODO CORRECCTO. SE SUPORPONEN LOS ALERDIALOG A LA EJECUCIÓN DE LA APP
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        /**
-         * Si hay diferentes permisos solicitando permisos de la aplicacion, aqui habria varios IF
-         */
+        */
+
+    /**
+     * Si hay diferentes permisos solicitando permisos de la aplicacion, aqui habria varios IF
+     *//*
         if (requestCode == SOLICITUD_ACCESS_FINE_LOCATION) {
 
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -503,8 +588,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
 
                 muestraProveedores();
-                /*CRITERIOS PARA ELEGIR EL PROVEEDOR:SIN COSTE, QUE MUESTRE ALTITUD, Y QUE TENGA PRECISIÓN FINA. CON ESTOS
-                * SERÁ ELEGIDO AUTOMÁTICAMENTE EL PROVEEDOR A UTILIZAR POR EL PROPIO TERMINAL*/
+                *//*CRITERIOS PARA ELEGIR EL PROVEEDOR:SIN COSTE, QUE MUESTRE ALTITUD, Y QUE TENGA PRECISIÓN FINA. CON ESTOS
+                * SERÁ ELEGIDO AUTOMÁTICAMENTE EL PROVEEDOR A UTILIZAR POR EL PROPIO TERMINAL*//*
                 Criteria criterio = new Criteria();
                 criterio.setCostAllowed(false);
                 criterio.setAltitudeRequired(false);
@@ -526,9 +611,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 return;
             }
         }
-    }
-
-
+    }*/
     private void GpsNoHabilitado() {
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -994,7 +1077,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         pDialog.setMessage("Obteniedo posiciones espera por favor...");
         pDialog.show();
 
+        if (mMap !=null){
         mMap.clear();
+        }
 
 
         StringRequest stringRequest = new StringRequest(metodo_Get_POST, uri,
