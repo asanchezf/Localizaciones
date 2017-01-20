@@ -26,6 +26,7 @@ import java.util.ArrayList;
 
 /**
  * Created by Susana on 04/02/2016.
+ * SE UTILIZÓ PARA CREAR UNA CUARTA PESTAÑA.ACTUALMENTE NO SE USA.
  */
 public class AdaptadorRecyclerView3 extends RecyclerView.Adapter<AdaptadorRecyclerView3.ContactosViewHolder> implements View.OnClickListener {
 

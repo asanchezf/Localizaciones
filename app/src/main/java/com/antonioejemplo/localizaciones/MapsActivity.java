@@ -75,12 +75,15 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
+import volley.AppController;
+
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener, GoogleMap.OnMarkerDragListener, GoogleMap.OnMarkerClickListener {//FragmentActivity
 
     public static final String LOGTAG = "OBTENER MARCADORES";
     private static final int SOLICITUD_ACCESS_FINE_LOCATION = 1;//Para control de permisos en Android M o superior
     private GoogleMap mMap;
-    private static final long TIEMPO_MIN = 60 * 1000; // 5 minutos. Un minuto son 6000 milisegundos ==> 5 minutos.300000 milisegundos.
+    //private static final long TIEMPO_MIN = 60 * 1000; //Un minuto son 6000 milisegundos
+    private static final long TIEMPO_MIN = 300 * 1000; //==> 5 minutos.300000 milisegundos.
     private static final long DISTANCIA_MIN = 100; // 100 metros
     private static final String[] A = {"n/d", "preciso", "impreciso"};
     private static final String[] P = {"n/d", "bajo", "medio", "alto"};
@@ -122,13 +125,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     // Rutas de los Web Services
     //String GET = IP + "insertar_localizacion.php";
     private RequestQueue requestQueue;//Cola de peticiones de Volley. se encarga de gestionar automáticamente el envió de las peticiones, la administración de los hilos, la creación de la caché y la publicación de resultados en la UI.
-
-
     LatLng milocalizacion;
 
     //PATRONES DE BÚSQUEDA APLICADOS EN traerMarcadoresWebService DEPENDIENDO DE LA PESTAÑA QUE SE ABRA.
     private String patron_Busqueda_Url = "http://petty.hol.es/obtener_localizaciones.php";
-
     private int metodo_Get_POST;
     private float zoom = 10;
 
@@ -143,6 +143,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     //Controla la salida para que no se intente volver a ejecutar el servicio en onRestart();
     private boolean salir = false;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -154,6 +156,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setSupportActionBar(toolbar);
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+
+
+        //Gestionamos los permisos según la versión. A partir de Android M los permisos se gestionan también en ejecución
+        //permisosPorAplicacion();
+
+
 
         //Lista de la cuarta pestaña.
         /*lista=(RecyclerView)findViewById(R.id.lstLista);
@@ -202,55 +211,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         //manejador es el LocationManager
         manejador = (LocationManager) getSystemService(LOCATION_SERVICE);
 
-
-        //Gestionamos los permisos según la versión. A partir de Android M los permisos se gestionan también en ejecución
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                //La aplicación tiene permisos....
-                muestraProveedores();
-                /*CRITERIOS PARA ELEGIR EL PROVEEDOR:SIN COSTE, QUE MUESTRE ALTITUD, Y QUE TENGA PRECISIÓN FINA. CON ESTOS
-                * SERÁ ELEGIDO AUTOMÁTICAMENTE EL PROVEEDOR A UTILIZAR POR EL PROPIO TERMINAL*/
-                Criteria criterio = new Criteria();
-                criterio.setCostAllowed(false);
-                criterio.setAltitudeRequired(false);
-                criterio.setAccuracy(Criteria.ACCURACY_FINE);
-                proveedor = manejador.getBestProvider(criterio, true);
-                Log.v(LOGCAT, "Mejor proveedor: " + proveedor + "\n");
-                Log.v(LOGCAT, "Comenzamos con la última localización conocida:");
-
-                Location localizacion = manejador.getLastKnownLocation(proveedor);
-
-                muestraLocaliz(localizacion);
-                muestradireccion(localizacion);
-
-                Toast.makeText(this, "1 Permiso Concedido", Toast.LENGTH_SHORT).show();
-
-            } else {//No tiene permisos
-
-                explicarUsoPermiso();
-                solicitarPermiso();
-            }
-
-        } else {//No es Android M o superior
-
-
-            muestraProveedores();
-        /*CRITERIOS PARA ELEGIR EL PROVEEDOR:SIN COSTE, QUE MUESTRE ALTITUD, Y QUE TENGA PRECISIÓN FINA. CON ESTOS
-        * SERÁ ELEGIDO AUTOMÁTICAMENTE EL PROVEEDOR A UTILIZAR POR EL PROPIO TERMINAL*/
-            Criteria criterio = new Criteria();
-            criterio.setCostAllowed(false);
-            criterio.setAltitudeRequired(false);
-            criterio.setAccuracy(Criteria.ACCURACY_FINE);
-            proveedor = manejador.getBestProvider(criterio, true);
-            Log.v(LOGCAT, "Mejor proveedor: " + proveedor + "\n");
-            Log.v(LOGCAT, "Comenzamos con la última localización conocida:");
-
-            Location localizacion = manejador.getLastKnownLocation(proveedor);
-            muestraLocaliz(localizacion);
-            muestradireccion(localizacion);
-        }
 
 
         //PANTALLA SIEMPRE ENCENDIDA...
@@ -370,15 +330,109 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         lista.setAdapter(adaptador);*/
 
+
+        //Gestionamos los permisos según la versión. A partir de Android M los permisos se gestionan también en ejecución
+        permisosPorAplicacion();
+
+
     }
 
+
+    private void permisosPorAplicacion(){
+
+        //Gestionamos los permisos según la versión. A partir de Android M algnos permisos catalogados como peligrosos se gestionan en tiempo de ejecución
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                //1-La aplicación tiene permisos....
+                muestraProveedores();
+                /*CRITERIOS PARA ELEGIR EL PROVEEDOR:SIN COSTE, QUE MUESTRE ALTITUD, Y QUE TENGA PRECISIÓN FINA. CON ESTOS
+                * SERÁ ELEGIDO AUTOMÁTICAMENTE EL PROVEEDOR A UTILIZAR POR EL PROPIO TERMINAL*/
+                Criteria criterio = new Criteria();
+                criterio.setCostAllowed(false);
+                criterio.setAltitudeRequired(false);
+                criterio.setAccuracy(Criteria.ACCURACY_FINE);
+                proveedor = manejador.getBestProvider(criterio, true);
+                Log.v(LOGCAT, "Mejor proveedor: " + proveedor + "\n");
+                Log.v(LOGCAT, "Comenzamos con la última localización conocida:");
+
+                Location localizacion = manejador.getLastKnownLocation(proveedor);
+
+                muestraLocaliz(localizacion);
+                muestradireccion(localizacion);
+
+                Toast.makeText(this, "1 Permiso Concedido", Toast.LENGTH_SHORT).show();
+
+            } else {//No tiene permisos
+
+                //explicarUsoPermiso();
+                solicitarPermiso();
+
+                //solicitarPermisoGPS(this);
+            }
+
+        } else {//No es Android M o superior. Ejecutamos de manera normal porque el permiso ya viene dado en el Manifiest
+
+
+            muestraProveedores();
+        /*CRITERIOS PARA ELEGIR EL PROVEEDOR:SIN COSTE, QUE MUESTRE ALTITUD, Y QUE TENGA PRECISIÓN FINA. CON ESTOS
+        * SERÁ ELEGIDO AUTOMÁTICAMENTE EL PROVEEDOR A UTILIZAR POR EL PROPIO TERMINAL*/
+            Criteria criterio = new Criteria();
+            criterio.setCostAllowed(false);
+            criterio.setAltitudeRequired(false);
+            criterio.setAccuracy(Criteria.ACCURACY_FINE);
+            proveedor = manejador.getBestProvider(criterio, true);
+            Log.v(LOGCAT, "Mejor proveedor: " + proveedor + "\n");
+            Log.v(LOGCAT, "Comenzamos con la última localización conocida:");
+
+            Location localizacion = manejador.getLastKnownLocation(proveedor);
+            muestraLocaliz(localizacion);
+            muestradireccion(localizacion);
+        }
+
+
+
+
+
+    }
+
+
+
+    /*private void solicitarPermisoGPS(MapsActivity mapsActivity) {
+
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.WRITE_CALL_LOG)) {
+            //4-Pequeña explicación de para qué queremos los permisos
+            Snackbar.make(findViewById(R.id.mapa), "Para que la aplicación funcione correctamente es necesario tener activado el permiso para poder utilizar el GPS.")
+                    .Snackbar.LENGTH_INDEFINITE
+                    .setAction("OK", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            ActivityCompat.requestPermissions(MapsActivity.this,
+                                    new String[]{ Manifest.permission. WRITE_CALL_LOG},
+                                    SOLICITUD_PERMISO_WRITE_CALL_LOG);
+                        }
+                    })
+                    .show();
+
+
+
+        } else {
+            //5-Se muetra cuadro de diálogo predeterminado del sistema para que concedamos o denegemos el permiso
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_CALL_LOG},
+                    SOLICITUD_PERMISO_WRITE_CALL_LOG);
+        }
+    }*/
 
     private void explicarUsoPermiso() {
         //PARA CONTROLAR LOS PERMISOS EN ANDROID M Y POSTERIORES. EL FLUJO NO ES DEL TODO CORRECCTO. SE SUPORPONEN LOS ALERDIALOG A LA EJECUCIÓN DE LA APP
 
         //Este IF es necesario para saber si el usuario ha marcado o no la casilla [] No volver a preguntar
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-            Toast.makeText(this, "2.1 Explicamos razonadamente porque necesitamos el permiso", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Para que la aplicación funcione correctamente es necesario" +
+                    "tener activado el permiso para poder utilizar el GPS", Toast.LENGTH_LONG).show();
             //Explicarle al usuario porque necesitas el permiso (Opcional)
             alertDialogBasico();
         }
@@ -406,14 +460,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         // 1. Instancia de AlertDialog.Builder con este constructor
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        // 2. Encadenar varios métodos setter para ajustar las características del diálogo
+// 2. Encadenar varios métodos setter para ajustar las características del diálogo
         builder.setMessage("La aplicación no tiene permisos para utilizar el GPS");
+
 
 
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
 
+
             }
+
         });
 
 
@@ -421,7 +478,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         return true;
     }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -461,12 +517,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 muestraLocaliz(localizacion);
                 muestradireccion(localizacion);
                 traerMarcadoresNew();//NO ESTA PROBADO
-                Toast.makeText(this, "3.1 Permiso Concedido", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "3.1 Permiso Concedido", Toast.LENGTH_SHORT).show();
             } else {
                 //1-Seguimos el proceso de ejecucion sin esta accion: Esto lo recomienda Google
                 //2-Cancelamos el proceso actual
                 //3-Salimos de la aplicacion
-                Toast.makeText(this, "3.2 Permiso No Concedido", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "No se ha concedido el permiso necesario para que la aplicación utilice el GPS del dispositivo.", Toast.LENGTH_SHORT).show();
                 return;
             }
         }
@@ -2057,9 +2113,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         modificacion = calendarNow;
 
 
-        //fechaHora2=c1;
-        modificacion = calendarNow;
-
         ObtenerWebService hiloconexion = new ObtenerWebService();
         hiloconexion.execute(INSERT);   // Parámetros que recibe doInBackground
 
@@ -2098,7 +2151,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 jsonParam.put("Latitud", latitud);
                 jsonParam.put("Velocidad", velocidad);
                 jsonParam.put("FechaHora", Stringfechahora);
-                jsonParam.put("Modificado", modificacion);
+                jsonParam.put("Modificado", modificacion);//De momento pone 00:00:00
                 // Envio los parámetros post.
                 OutputStream os = urlConn.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(

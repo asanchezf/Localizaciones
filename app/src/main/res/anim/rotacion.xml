@@ -5,11 +5,13 @@
     <rotate
 
         android:fromDegrees="0"
-        android:toDegrees="360"
-        android:duration="4000"
+        android:toDegrees="2880"
+        android:duration="6000"
         android:pivotX="50%"
         android:pivotY="50%">
 
+        <!--android:toDegrees="2880" giros que realizará la imagen-->
+        <!--android:toDegrees="360" giros que realizará la imagen-->
 
     </rotate>
 

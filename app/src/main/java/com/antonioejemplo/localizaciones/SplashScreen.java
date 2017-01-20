@@ -36,7 +36,7 @@ public class SplashScreen extends Activity {
                 startActivity(intent);
                 finish();
             }
-        }, 8000);//splash de 6 segundos.
+        }, 8000);//splash de 8 segundos.
     }
 
     public void rotar() {
