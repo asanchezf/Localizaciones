@@ -52,7 +52,9 @@ public class ServicioLocalizaciones extends Service implements LocationListener 
     private static final String[] E = {"fuera de servicio",
             "temporalmente no disponible ", "disponible"};
 
-    private String patron_Busqueda_Url = "http://petty.hol.es/obtener_localizaciones.php";
+    //private String patron_Busqueda_Url = "http://petty.hol.es/obtener_localizaciones.php";
+    private String patron_Busqueda_Url = "http://petylde.esy.es/obtener_localizaciones.php";
+
     private int metodo_Get_POST;
     LatLng milocalizacion;
     private static String LOGCATSERVICIO;
@@ -84,7 +86,9 @@ public class ServicioLocalizaciones extends Service implements LocationListener 
     long fechaHora2;
     String Stringfechahora;
     ObtenerWebService obtenerWebService;
-    String INSERT = "http://petty.hol.es/insertar_localizacion.php";
+    //String INSERT = "http://petty.hol.es/insertar_localizacion.php";
+    String INSERT = "http://petylde.esy.es/insertar_localizacion.php";
+
     Location localizacion;
     GoogleMap mapServicio;
     private float zoom = 10;

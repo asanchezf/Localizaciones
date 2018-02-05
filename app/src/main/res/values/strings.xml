@@ -55,4 +55,5 @@
     <string name="configurargps">Configurar GPS</string>
     <string name="crear_cuenta">CREAR CUENTA</string>
     <string name="iniciar">INICIAR</string>
+    <string name="transfiriendo_datos">Transfiriendo datos… espera por favor.</string>
 </resources>

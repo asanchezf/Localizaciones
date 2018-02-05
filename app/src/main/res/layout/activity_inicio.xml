@@ -30,79 +30,84 @@ android:id="@+id/contenedor"
 
         />
 
-    <TabHost android:id="@android:id/tabhost"
+    <TabHost
+        android:id="@android:id/tabhost"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:theme="@style/TabHosTheme"
         >
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <TabWidget android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+            <TabWidget
                 android:id="@android:id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
 
-                android:baselineAligned="false" />
+                android:baselineAligned="false"/>
 
-            <FrameLayout android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@android:id/tabcontent">
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-                <LinearLayout android:id="@+id/tab1"
-                    android:orientation="vertical"
+                <LinearLayout
+                    android:id="@+id/tab1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:orientation="vertical"
 
                     >
 
                     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-                        xmlns:map="http://schemas.android.com/apk/res-auto"
-                        xmlns:tools="http://schemas.android.com/tools"
-                        android:id="@+id/map"
-                        android:name="com.google.android.gms.maps.SupportMapFragment"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        tools:context="com.antonioejemplo.localizaciones.MapsActivity"
+                              xmlns:map="http://schemas.android.com/apk/res-auto"
+                              xmlns:tools="http://schemas.android.com/tools"
+                              android:id="@+id/map"
+                              android:name="com.google.android.gms.maps.SupportMapFragment"
+                              android:layout_width="match_parent"
+                              android:layout_height="match_parent"
+                              tools:context="com.antonioejemplo.localizaciones.MapsActivity"
                         />
 
 
                 </LinearLayout>
 
-                <LinearLayout android:id="@+id/tab2"
-                    android:orientation="vertical"
+                <LinearLayout
+                    android:id="@+id/tab2"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" >
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
                     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-                        xmlns:map="http://schemas.android.com/apk/res-auto"
-                        xmlns:tools="http://schemas.android.com/tools"
-                        android:id="@+id/map2"
-                        android:name="com.google.android.gms.maps.SupportMapFragment"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        tools:context="com.antonioejemplo.localizaciones.MapsActivity"
+                              xmlns:map="http://schemas.android.com/apk/res-auto"
+                              xmlns:tools="http://schemas.android.com/tools"
+                              android:id="@+id/map2"
+                              android:name="com.google.android.gms.maps.SupportMapFragment"
+                              android:layout_width="match_parent"
+                              android:layout_height="match_parent"
+                              tools:context="com.antonioejemplo.localizaciones.MapsActivity"
                         />
 
                 </LinearLayout>
 
 
-
-                <LinearLayout android:id="@+id/tab3"
-                    android:orientation="vertical"
+                <LinearLayout
+                    android:id="@+id/tab3"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" >
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
                     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-                        xmlns:map="http://schemas.android.com/apk/res-auto"
-                        xmlns:tools="http://schemas.android.com/tools"
-                        android:id="@+id/map3"
-                        android:name="com.google.android.gms.maps.SupportMapFragment"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        tools:context="com.antonioejemplo.localizaciones.MapsActivity"
+                              xmlns:map="http://schemas.android.com/apk/res-auto"
+                              xmlns:tools="http://schemas.android.com/tools"
+                              android:id="@+id/map3"
+                              android:name="com.google.android.gms.maps.SupportMapFragment"
+                              android:layout_width="match_parent"
+                              android:layout_height="match_parent"
+                              tools:context="com.antonioejemplo.localizaciones.MapsActivity"
                         />
                 </LinearLayout>
 
@@ -117,7 +122,6 @@ android:id="@+id/contenedor"
 
 
                   </LinearLayout>-->
-
 
 
             </FrameLayout>

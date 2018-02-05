@@ -126,14 +126,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     static String Stringfechahora;
 
     // IP de mi Url
-    String IP = "http://petty.hol.es/";
+    //String IP = "http://petty.hol.es/";
+    String IP = "http://petylde.esy.es/";
+
     // Rutas de los Web Services
     //String GET = IP + "insertar_localizacion.php";
     private RequestQueue requestQueue;//Cola de peticiones de Volley. se encarga de gestionar automáticamente el envió de las peticiones, la administración de los hilos, la creación de la caché y la publicación de resultados en la UI.
     LatLng milocalizacion;
 
     //PATRONES DE BÚSQUEDA APLICADOS EN traerMarcadoresWebService DEPENDIENDO DE LA PESTAÑA QUE SE ABRA.
-    private String patron_Busqueda_Url = "http://petty.hol.es/obtener_localizaciones.php";
+    //private String patron_Busqueda_Url = "http://petty.hol.es/obtener_localizaciones.php";
+    private String patron_Busqueda_Url = "http://petylde.esy.es/obtener_localizaciones.php";
     private int metodo_Get_POST;
     private float zoom = 10;
 
@@ -240,7 +243,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     mMap.clear();
                     //Traemos todas la última ubicación de cada usuario
-                    patron_Busqueda_Url = "http://petty.hol.es/obtener_localizaciones.php";
+                    //patron_Busqueda_Url = "http://petty.hol.es/obtener_localizaciones.php";
+                    patron_Busqueda_Url = "http://petylde.esy.es/obtener_localizaciones.php";
                     //Método GET
                     metodo_Get_POST = 0;
 
@@ -259,7 +263,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     mMap.clear();
                     //Traemos todas las localizaciones de todos los usuarios
-                    patron_Busqueda_Url = "http://petty.hol.es/obtener_localizaciones_todas.php";
+                    //patron_Busqueda_Url = "http://petty.hol.es/obtener_localizaciones_todas.php";
+                    patron_Busqueda_Url = "http://petylde.esy.es/obtener_localizaciones_todas.php";
                     //Método GET
                     metodo_Get_POST = 0;
                     // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -274,7 +279,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if (tabId.equals("mitab3")) {
 
                     mMap.clear();
-                    patron_Busqueda_Url = "http://petty.hol.es/obtener_todas_por_usuario.php";
+                    //patron_Busqueda_Url = "http://petty.hol.es/obtener_todas_por_usuario.php";
+                    patron_Busqueda_Url = "http://petylde.esy.es/obtener_todas_por_usuario.php";
 
                     //Método POST
                     metodo_Get_POST = 1;
@@ -315,7 +321,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        //Gestionamos los permisos según la versión. A partir de Android M los permisos se gestionan también en ejecución
+        //Gestionamos los permisos
         permisosPorAplicacion();
 
     }
@@ -436,9 +442,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     //</editor-fold>
 
 
-
-
-
     private void utilizamosGps() {
         muestraProveedores();
                 /*CRITERIOS PARA ELEGIR EL PROVEEDOR:SIN COSTE, QUE MUESTRE ALTITUD, Y QUE TENGA PRECISIÓN FINA. CON ESTOS
@@ -458,12 +461,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Location localizacion = manejador.getLastKnownLocation(proveedor);
         muestraLocaliz(localizacion);
         muestradireccion(localizacion);
-        traerMarcadoresNew();//NO ESTA PROBADO
+        traerMarcadoresNew();
 
 
     }
-
-
 
     private void GpsNoHabilitado() {
 
@@ -492,8 +493,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         //Toast.makeText(context, "Telefono:" + marker.getSnippet().toString(), Toast.LENGTH_LONG).show();
         //Toast.makeText(context, "Telefono:" + telefonowsp+" "+telefono, Toast.LENGTH_LONG).show();
 
+        //patron_Busqueda_Url == "http://petty.hol.es/obtener_localizaciones.php"
+        if (patron_Busqueda_Url == "http://petylde.esy.es/obtener_localizaciones.php") {//Solo para la primera pestaña que tiene el teléfono en el snippe
 
-        if (patron_Busqueda_Url == "http://petty.hol.es/obtener_localizaciones.php") {//Solo para la primera pestaña que tiene el teléfono en el snippe
             String telf_wsp = marker.getSnippet();
             String telf_wsp2 = telf_wsp.substring(telf_wsp.length() - 9, telf_wsp.length());//Sacamos los nueve últimos caracteres para extraer el teléfono...
             Toast.makeText(context, "Telefono:" + telf_wsp2, Toast.LENGTH_LONG).show();
@@ -546,7 +548,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void traerMarcadoresNew() {
         String tag_json_obj_actual = "json_obj_req_actual";
         final String KEY_USERNAME_MARCADOR = "Usuario";
-        final String LOGIN_URL = "http://petty.hol.es/obtener_todas_por_usuario.php";
+        //final String LOGIN_URL = "http://petty.hol.es/obtener_todas_por_usuario.php";
+        final String LOGIN_URL = "http://petylde.esy.es/obtener_todas_por_usuario.php";
 
         Log.d(LOGCAT, "Valor de usuarioMaps_KEY " + KEY_USERNAME_MARCADOR);
         Log.d(LOGCAT, "Valor de usuarioMaps_Valor " + usuarioMapas);
@@ -611,7 +614,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
                                 //CASO 1--http://petty.hol.es/obtener_localizaciones.php
-                                if (patron_Busqueda_Url == "http://petty.hol.es/obtener_localizaciones.php") {
+                                //CASO 1--Traemos las últimas posiciones de todos
+                                //(patron_Busqueda_Url == "http://petty.hol.es/obtener_localizaciones.php")
+                                if (patron_Busqueda_Url == "http://petylde.esy.es/obtener_localizaciones.php") {
 
                                     //mMap.clear();
                                     telefonomarcador = json_array.getJSONObject(z).getString("Telefono");
@@ -695,7 +700,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
                                 //CASO 2-Ponemos marcadores para todas las posiciones de todos: ponemos marcadores por defecto
-                                else if (metodo_Get_POST == Request.Method.GET && patron_Busqueda_Url == "http://petty.hol.es/obtener_localizaciones_todas.php") {
+                                //else if (metodo_Get_POST == Request.Method.GET && patron_Busqueda_Url == "http://petty.hol.es/obtener_localizaciones_todas.php")
+                                else if (metodo_Get_POST == Request.Method.GET && patron_Busqueda_Url == "http://petylde.esy.es/obtener_localizaciones_todas.php") {
 
                                     //mMap.clear();
                                     if (usuario.equals("Antonio")) {
@@ -818,8 +824,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
     }
-
-
 
     public class TraerMarcadoresAsyncTacks extends AsyncTask<String, Void, String> {
 
@@ -1191,15 +1195,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-
-
-
-
     public void traerMarcadores() {
 
         String tag_json_obj_actual = "json_obj_req_actual";
         final String KEY_USERNAME_MARCADOR = "Usuario";
-        final String LOGIN_URL = "http://petty.hol.es/obtener_todas_por_usuario.php";
+        //final String LOGIN_URL = "http://petty.hol.es/obtener_todas_por_usuario.php";
+        final String LOGIN_URL = "http://petylde.esy.es/obtener_todas_por_usuario.php";
 
         Log.d(LOGCAT, "Valor de usuarioMaps_KEY " + KEY_USERNAME_MARCADOR);
         Log.d(LOGCAT, "Valor de usuarioMaps_Valor " + usuarioMapas);
@@ -1253,7 +1254,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
                                 //El teléfono solo viene informado en el caso de hacer la join con Usuarios...
-                                if (patron_Busqueda_Url == "http://petty.hol.es/obtener_localizaciones.php") {
+                                //patron_Busqueda_Url == "http://petty.hol.es/obtener_localizaciones.php")
+                                if (patron_Busqueda_Url == "http://petylde.esy.es/obtener_localizaciones.php") {
                                     telefonomarcador = json_array.getJSONObject(z).getString("Telefono");
                                     telefonowsp = telefonomarcador;
 
@@ -1332,7 +1334,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     //GESTIONAMOS LOS COLORES DE LOS MARCADORES DEPENDIENDO DEL TIPO DE LLAMADA Y DEL SERVICIO AL QUE SE LLAME...
 
                                     //CASO 1-Ponemos marcadores para las últimas posiciones de todos
-                                    if (metodo_Get_POST == Request.Method.GET && patron_Busqueda_Url == "http://petty.hol.es/obtener_localizaciones.php") {
+                                    //(metodo_Get_POST == Request.Method.GET && patron_Busqueda_Url == "http://petty.hol.es/obtener_localizaciones.php")
+                                    if (metodo_Get_POST == Request.Method.GET && patron_Busqueda_Url == "http://petylde.esy.es/obtener_localizaciones.php") {
 
                                         if (z == 0) {
 
@@ -1416,7 +1419,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     }
 
                                     //CASO 2-Ponemos marcadores para todas las posiciones de todos: ponemos marcadores por defecto
-                                    else if (metodo_Get_POST == Request.Method.GET && patron_Busqueda_Url == "http://petty.hol.es/obtener_localizaciones_todas.php") {
+                                    //else if (metodo_Get_POST == Request.Method.GET && patron_Busqueda_Url == "http://petty.hol.es/obtener_localizaciones_todas.php")
+                                    else if (metodo_Get_POST == Request.Method.GET && patron_Busqueda_Url == "http://petylde.esy.es/obtener_localizaciones_todas.php") {
 
                                         mMap.addMarker(new MarkerOptions()
                                                 .title(usuario)
@@ -1480,7 +1484,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         String tag_json_obj_actual = "json_obj_req_actual";
         final String KEY_USERNAME_MARCADOR = "Usuario";
-        final String LOGIN_URL = "http://petty.hol.es/obtener_todas_por_usuario.php";
+        //final String LOGIN_URL = "http://petty.hol.es/obtener_todas_por_usuario.php";
+        final String LOGIN_URL = "http://petylde.esy.es/obtener_todas_por_usuario.php";
 
         Log.d(LOGCAT, "Valor de usuarioMaps_KEY " + KEY_USERNAME_MARCADOR);
         Log.d(LOGCAT, "Valor de usuarioMaps_Valor " + usuarioMapas);
@@ -1733,7 +1738,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         String tag_json_obj_actual = "json_obj_req_actual";
         final String KEY_USERNAME_MARCADOR = "Usuario";
-        final String LOGIN_URL = "http://petty.hol.es/obtener_todas_por_usuario.php";
+        //final String LOGIN_URL = "http://petty.hol.es/obtener_todas_por_usuario.php";
+        final String LOGIN_URL = "http://petylde.esy.es/obtener_todas_por_usuario.php";
 
         Log.d(LOGCAT, "Valor de usuarioMaps_KEY " + KEY_USERNAME_MARCADOR);
         Log.d(LOGCAT, "Valor de usuarioMaps_Valor " + usuarioMapas);
@@ -2036,7 +2042,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void enviaDatosAlServidor() {
         /*PREPARA Y HACE LA LLAMADA PARA LA INSERCCIÓN AUTOMÁTICA DE LAS LOCALIZACIONES DEL USUARIO CONECTADO*/
 
-        String INSERT = "http://petty.hol.es/insertar_localizacion.php";
+        //String INSERT = "http://petty.hol.es/insertar_localizacion.php";
+        String INSERT = "http://petylde.esy.es/insertar_localizacion.php";
         Calendar calendarNow = new GregorianCalendar(TimeZone.getTimeZone("Europe/Madrid"));
 
         Calendar c1 = GregorianCalendar.getInstance();

@@ -8,7 +8,8 @@
     <item>
 
         <shape>
-            <gradient android:startColor="@color/colorPrimaryDark" android:endColor="@android:color/background_dark" android:angle="90">
+            <gradient android:startColor="@color/colorPrimaryDark"
+                      android:endColor="@android:color/background_dark" android:angle="90">
                 <!--angle debe ser múltiplo de 45-->
             </gradient>
 

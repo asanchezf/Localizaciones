@@ -10,15 +10,15 @@ import android.os.Build;
 import android.os.Bundle;
 import android.widget.Button;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class MainActivity extends Activity {
 
     //Declaramos los controles con anotaciones de ButterKnife
-    @Bind(R.id.btnLogin) Button btnLogin;
-    @Bind(R.id.btnRegistrarse) Button btnRegistrarse;
+    @BindView(R.id.btnLogin) Button btnLogin;
+    @BindView(R.id.btnRegistrarse) Button btnRegistrarse;
 
     private static long back_pressed;//Contador para cerrar la app al pulsar dos veces seguidas el btón de cerrar. Se gestiona en el evento onBackPressed
     AlertDialog alert = null;

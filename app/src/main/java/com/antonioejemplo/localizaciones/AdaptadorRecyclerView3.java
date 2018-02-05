@@ -140,7 +140,9 @@ public class AdaptadorRecyclerView3 extends RecyclerView.Adapter<AdaptadorRecycl
     //CONSTRUCTOR DEL ADAPTADOR
     public AdaptadorRecyclerView3(ArrayList<Usuarios> datos, Context contexto) {
 
-        String URL_BASE = "http://petty.hol.es/obtener_usuarios.php";
+        //String URL_BASE = "http://petty.hol.es/obtener_usuarios.php";
+        String URL_BASE = "http://petylde.esy.es/obtener_usuarios.php";
+
         this.listaUsuarios = datos;
         //this.escucha = escucha;
         this.contexto = contexto;

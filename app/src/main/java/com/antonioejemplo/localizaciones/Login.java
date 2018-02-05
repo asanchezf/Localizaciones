@@ -3,8 +3,10 @@ package com.antonioejemplo.localizaciones;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -22,7 +24,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import volley.AppController;
@@ -30,20 +32,17 @@ import volley.AppController;
 
 public class Login extends AppCompatActivity  {
 
-    //private static final String REGISTER_URL = "http://petty.hol.es/insertar_usuario.php";
-    //public static final String LOGIN_URL = "http://petty.hol.es/validar_usuario.php";//Ws para controlar el acceso a la app.
-    public static final String LOGIN_URL = "http://petty.hol.es/validar_usuario_cifrado.php";//Ws para controlar el acceso a la app.
 
     public static final String KEY_USERNAME = "Username";
     public static final String KEY_PASSWORD = "Password";
     public static final String KEY_EMAIL = "Email";
 
     //Declaramos los controles con anotaciones de ButterKnife
-    @Bind(R.id.btnLogin) Button btnLogin;
+    @BindView(R.id.btnLogin) Button btnLogin;
     //@Bind(R.id.btnRegistrarse) Button btnRegistrarse;
 
-    @Bind(R.id.txtNombre) EditText txtNombre;
-    @Bind(R.id.txtPassword) EditText txtPassword;
+    @BindView(R.id.txtNombre) EditText txtNombre;
+    @BindView(R.id.txtPassword) EditText txtPassword;
     //@Bind(R.id.txtEmail) EditText txtEmail;
 
 
@@ -90,7 +89,15 @@ public class Login extends AppCompatActivity  {
 
                 Snackbar snack = Snackbar.make(btnLogin, R.string.avisologarseusuario, Snackbar.LENGTH_LONG);
                 ViewGroup group = (ViewGroup) snack.getView();
-                group.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                //group.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    group.setBackground(ContextCompat.getDrawable(Login.this,R.drawable.colorear_button));
+                }else{
+
+                    group.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                }
+
 
                 snack.show();
 
@@ -119,7 +126,7 @@ public class Login extends AppCompatActivity  {
         pDialog.setMessage("Iniciando sesión... espera por favor");
         pDialog.show();
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, LOGIN_URL,
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Conexiones.LOGIN_URL_VOLLEY,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

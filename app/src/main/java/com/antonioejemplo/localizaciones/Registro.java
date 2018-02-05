@@ -4,9 +4,11 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.ViewGroup;
@@ -37,17 +39,14 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import volley.AppController;
 
 public class Registro extends AppCompatActivity {
 
-    //private static final String REGISTER_URL_ASYNC_TASK = "http://petty.hol.es/insertar_usuario.php";//Ws utilizado con Asynctask. Pasamos parámetros en formato json.
-    private static final String REGISTER_URL_VOLLEY = "http://petty.hol.es/insertar_usuario_volley.php";//WS utilizado con Volley. Controla que no se repita el usuario.
-
-    //Parametros enviados al ws.
+      //Parametros enviados al ws.
     public static final String KEY_USERNAME = "Username";
     public static final String KEY_PASSWORD = "Password";
     public static final String KEY_EMAIL = "Email";
@@ -57,11 +56,11 @@ public class Registro extends AppCompatActivity {
 
     //Declaramos los controles con anotaciones de ButterKnife
 
-    @Bind(R.id.btnRegistrarse) Button btnRegistrarse;
-    @Bind(R.id.txtNombre) EditText txtNombre;
-    @Bind(R.id.txtPassword) EditText txtPassword;
-    @Bind(R.id.txtEmail) EditText txtEmail;
-    @Bind(R.id.txtTelefono) EditText txtTelefono;
+    @BindView(R.id.btnRegistrarse) Button btnRegistrarse;
+    @BindView(R.id.txtNombre) EditText txtNombre;
+    @BindView(R.id.txtPassword) EditText txtPassword;
+    @BindView(R.id.txtEmail) EditText txtEmail;
+    @BindView(R.id.txtTelefono) EditText txtTelefono;
 
     Context context;
 
@@ -103,8 +102,16 @@ public class Registro extends AppCompatActivity {
 
                 Snackbar snack = Snackbar.make(btnRegistrarse, R.string.avisoaltausuario, Snackbar.LENGTH_LONG);
                 ViewGroup group = (ViewGroup) snack.getView();
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                group.setBackground(ContextCompat.getDrawable(Registro.this,R.drawable.colorear_button));
+            }else{
+
                 group.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                snack.show();
+            }
+
+
+            snack.show();
 
 
                 return false;
@@ -120,11 +127,12 @@ public class Registro extends AppCompatActivity {
         //SE DEJA EL CÓDIGO COMENTADO.
         //Llamada al Ws utilizando AsyncTask. Los parámetros los pasa en formato Json. Hay que descodificarlos desde el Ws.
 
-        String INSERT="http://petty.hol.es/insertar_usuario.php";
-
+       //String INSERT="http://petty.hol.es/insertar_usuario.php";
+        //String INSERT="http://petylde.esy.es/insertar_usuario.php";
+        String URL=Conexiones.REGISTER_URL_ASYNCTACKS;
 
         ObtenerWebService hiloconexion = new ObtenerWebService();
-        hiloconexion.execute(INSERT);   // Parámetros que recibe doInBackground
+        hiloconexion.execute(URL);   // Parámetros que recibe doInBackground
     }
 
 
@@ -278,10 +286,10 @@ public class Registro extends AppCompatActivity {
         final String Telefono = txtTelefono.getText().toString().trim();
 
         final ProgressDialog pDialog = new ProgressDialog(this);
-        pDialog.setMessage("Transfiriendo datos... espera por favor.");
+        pDialog.setMessage(getString(R.string.transfiriendo_datos));
         pDialog.show();
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, REGISTER_URL_VOLLEY,
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Conexiones.REGISTER_URL_VOLLEY,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
