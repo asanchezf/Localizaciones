@@ -32,6 +32,10 @@ import volley.AppController;
 
 public class Login extends AppCompatActivity  {
 
+    //private static final String REGISTER_URL = "http://petty.hol.es/insertar_usuario.php";
+    //public static final String LOGIN_URL = "http://petty.hol.es/validar_usuario.php";//Ws para controlar el acceso a la app.
+    //public static final String LOGIN_URL = "http://petty.hol.es/validar_usuario_cifrado.php";//Ws para controlar el acceso a la app.
+    public static final String LOGIN_URL = "http://petylde.esy.es/validar_usuario_cifrado.php";//Ws para controlar el acceso a la app.
 
     public static final String KEY_USERNAME = "Username";
     public static final String KEY_PASSWORD = "Password";
