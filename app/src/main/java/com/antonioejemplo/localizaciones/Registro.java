@@ -127,8 +127,6 @@ public class Registro extends AppCompatActivity {
         //SE DEJA EL CÓDIGO COMENTADO.
         //Llamada al Ws utilizando AsyncTask. Los parámetros los pasa en formato Json. Hay que descodificarlos desde el Ws.
 
-       //String INSERT="http://petty.hol.es/insertar_usuario.php";
-        //String INSERT="http://petylde.esy.es/insertar_usuario.php";
         String URL=Conexiones.REGISTER_URL_ASYNCTACKS;
 
         ObtenerWebService hiloconexion = new ObtenerWebService();
