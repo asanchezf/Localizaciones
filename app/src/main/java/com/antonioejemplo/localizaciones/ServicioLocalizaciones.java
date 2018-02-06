@@ -20,7 +20,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,11 +51,8 @@ public class ServicioLocalizaciones extends Service implements LocationListener 
     private static final String[] E = {"fuera de servicio",
             "temporalmente no disponible ", "disponible"};
 
-    //private String patron_Busqueda_Url = "http://petty.hol.es/obtener_localizaciones.php";
-    private String patron_Busqueda_Url = "http://petylde.esy.es/obtener_localizaciones.php";
 
-    private int metodo_Get_POST;
-    LatLng milocalizacion;
+
     private static String LOGCATSERVICIO;
     private LocationManager manejador;
     private String proveedor;
@@ -86,8 +82,8 @@ public class ServicioLocalizaciones extends Service implements LocationListener 
     long fechaHora2;
     String Stringfechahora;
     ObtenerWebService obtenerWebService;
-    //String INSERT = "http://petty.hol.es/insertar_localizacion.php";
-    String INSERT = "http://petylde.esy.es/insertar_localizacion.php";
+
+
 
     Location localizacion;
     GoogleMap mapServicio;
@@ -199,25 +195,6 @@ public class ServicioLocalizaciones extends Service implements LocationListener 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-
-       /* Bundle bundle = intent.getExtras();
-        id = bundle.getInt("Id_Usuario");
-        poblacion=bundle.getString("Poblacion");
-        calle=bundle.getString("Calle");
-        numero=bundle.getString("Numero");
-        longitud=bundle.getDouble("Longitud");
-        latitud=bundle.getDouble("Latitud");
-        velocidad=bundle.getFloat("Velocidad");
-        Stringfechahora=bundle.getString("FechaHora");
-        modificacion=bundle.getString("Modificado");*/
-
-
-        //enviaDatosAlServidor();
-
-        //obtenerWebService.execute(INSERT);
-   /*     MapsActivity mapsActivity=new MapsActivity();
-        mapsActivity.onResume();*/
-
         super.onStartCommand(intent, flags, startId);
 
 
@@ -300,12 +277,6 @@ public class ServicioLocalizaciones extends Service implements LocationListener 
             //Devolvemos los datos
             latitud = location.getLatitude();
             longitud = location.getLongitude();
-
-            //velocidad = conversionVelocidad(location.getSpeed());
-
-
-            //velocidad= conversionVelocidad(location.getSpeed());
-
             velocidad = location.getSpeed();
             altitud = location.getAltitude();
 
@@ -331,9 +302,6 @@ public class ServicioLocalizaciones extends Service implements LocationListener 
 
                         poblacion = "";
 
-                        //velocidad_dir = Float.toString(location.getSpeed());
-
-
                     }
 
                     log("Dirección de localización:+ \n " + direccion + " " + poblacion);
@@ -355,40 +323,27 @@ public class ServicioLocalizaciones extends Service implements LocationListener 
     private void enviaDatosAlServidor() {
 
         //PREPARA Y HACE LA LLAMADA PARA LA INSERCCIÓN AUTOMÁTICA DE LAS LOCALIZACIONES DEL USUARIO CONECTADO
+        String url_Inserta_localizacion = Conexiones.INSERTAR_POSICION_URL_VOLLEY;
 
-
-        //String INSERT = "http://petty.hol.es/insertar_localizacion.php";
         Calendar calendarNow = new GregorianCalendar(TimeZone.getTimeZone("Europe/Madrid"));
 
         Calendar c1 = GregorianCalendar.getInstance();
-        //System.out.println("Fecha actual: "+c1.getTime().toLocaleString());
-        //usuario="Antonio";
-        //usuario="Susana";
         fechaHora2 = System.currentTimeMillis();
 
-        //System.out.println("Fecha del sistema: " + fechaHora2);
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
         Stringfechahora = sdf.format(fechaHora2);
         //System.out.println("Fecha del sistema: "+dateString);
         Log.v("", "Fecha del sistema: " + Stringfechahora);
-        //modificacion = calendarNow;
-
-
-        //fechaHora2=c1;
         modificacion = calendarNow;
 
         ObtenerWebService hiloconexion = new ObtenerWebService();
-        hiloconexion.execute(INSERT);   // Parámetros que recibe doInBackground
-
-
+        hiloconexion.execute(url_Inserta_localizacion);   // Parámetros que recibe doInBackground
     }
 
 
     public class ObtenerWebService extends AsyncTask<String, Void, String> {
 
-
-        //CONECTA E INSERTA LAS LOCALIZACIONES AUTOMÁTICAS DEL USUARIO CONECTADO
         @Override
         protected String doInBackground(String... params) {
 
@@ -492,48 +447,14 @@ public class ServicioLocalizaciones extends Service implements LocationListener 
         }
     }
 
-
-    /**
-     * Called when the location has changed.
-     * <p>
-     * <p> There are no restrictions on the use of the supplied Location object.
-     *
-     * @param location The new location, as a Location object.
-     */
     @Override
     public void onLocationChanged(Location location) {
         Log.v(LOGCATSERVICIO, "ServicioLocalizaciones-> onLocationChanged");
         //cambiaLocalizacion();
         enviaDatosAlServidor();
 
-        //MapsActivity mapsActivity=new MapsActivity();
-        //mapsActivity.traerMarcadoresNew();
-        //mapsActivity.onLocationChanged(location);
     }
 
-    /**
-     * Called when the provider status changes. This method is called when
-     * a provider is unable to fetch a location or if the provider has recently
-     * become available after a period of unavailability.
-     *
-     * @param provider the name of the location provider associated with this
-     *                 update.
-     * @param status   {@link LocationProvider#OUT_OF_SERVICE} if the
-     *                 provider is out of service, and this is not expected to change in the
-     *                 near future; {@link LocationProvider#TEMPORARILY_UNAVAILABLE} if
-     *                 the provider is temporarily unavailable but is expected to be available
-     *                 shortly; and {@link LocationProvider#AVAILABLE} if the
-     *                 provider is currently available.
-     * @param extras   an optional Bundle which will contain provider specific
-     *                 status variables.
-     *                 <p>
-     *                 <p> A number of common key/value pairs for the extras Bundle are listed
-     *                 below. Providers that use any of the keys on this list must
-     *                 provide the corresponding value as described below.
-     *                 <p>
-     *                 <ul>
-     *                 <li> satellites - the number of satellites used to derive the fix
-     */
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
 
@@ -545,14 +466,7 @@ public class ServicioLocalizaciones extends Service implements LocationListener 
 
     }
 
-    /**
-     * Called when the provider is disabled by the user. If requestLocationUpdates
-     * is called on an already disabled provider, this method is called
-     * immediately.
-     *
-     * @param provider the name of the location provider associated with this
-     *                 update.
-     */
+
     @Override
     public void onProviderDisabled(String provider) {
 
