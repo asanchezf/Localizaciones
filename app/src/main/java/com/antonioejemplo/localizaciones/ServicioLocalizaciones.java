@@ -451,8 +451,9 @@ public class ServicioLocalizaciones extends Service implements LocationListener 
     public void onLocationChanged(Location location) {
         Log.v(LOGCATSERVICIO, "ServicioLocalizaciones-> onLocationChanged");
         //cambiaLocalizacion();
+        muestraLocaliz(location);
+        muestradireccion(location);
         enviaDatosAlServidor();
-
     }
 
     @Override

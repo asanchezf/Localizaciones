@@ -91,7 +91,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
  * OnMapReadyCallback==>onMapReady(GoogleMap var1)//EL MAPA ESTÁ LISTA PARA MOSTRAR POSCIONES.
  *
  * LocationListener==>ES EL ESCUCHADOR DE LOS CAMBIOS QUE SE PRODUCEN QUE TENGAN QUE VER CON EL  MAPA
- *          onLocationChanged(Location location)//CUANDO SE PRODUCEN CAMBIOS EN LAS POSICIONES
+  *          onLocationChanged(Location location)//CUANDO SE PRODUCEN CAMBIOS EN LAS POSICIONES
  *          onStatusChanged(String provider, int status, Bundle extras);//CUANDO SE CAMBIA DE PROVEEDOR
  *          onProviderEnabled(String provider);//CUANDO SE HABILITA EL PROVEEDOR
  *          onProviderDisabled(String provider);CUANDO SE DESHABILITA EL PROVEEDOR
