@@ -26,6 +26,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.principio);
+
         if (Build.VERSION.SDK_INT >= 21) {
             Resources res = getResources();
             //

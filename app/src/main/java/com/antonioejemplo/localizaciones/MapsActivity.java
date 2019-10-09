@@ -512,7 +512,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             //Sacamos el valor de estado
                             int resultJSON = Integer.parseInt(json_Object.getString("estado"));
                             Log.v(LOGTAG, "Valor de estado: " + resultJSON);
-
                             JSONArray json_array = json_Object.getJSONArray("alumnos");
                             //JSONArray json_array = response.getJSONArray("alumnos");
                             for (int z = 0; z < json_array.length(); z++) {
@@ -2304,7 +2303,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         enviaDatosAlServidor();
 
         mMap.clear();
-        if (salir == false) {
+        if (!salir) {
             traerMarcadoresNew();
         }
 

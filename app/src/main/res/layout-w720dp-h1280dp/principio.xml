@@ -10,7 +10,6 @@
                 tools:context="com.antonioejemplo.localizaciones.MainActivity"
                 android:background="@drawable/degradado_fondo">
 
-<!--android:background="@color/colorPrimary"-->
 
 
 

@@ -24,7 +24,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.0'
+        classpath 'com.android.tools.build:gradle:3.4.1'
     }
 }
 
@@ -42,9 +42,7 @@ allprojects {
         }
     }
 
-    tasks.withType(JavaCompile) {
-        options.encoding = 'UTF-8'
-    }
+
 }
 
 dependencies {
@@ -68,7 +66,7 @@ android {
         quiet true
         abortOnError false
     }
-    buildToolsVersion '27.0.3'
+    buildToolsVersion '28.0.3'
 }
 
 apply from: 'https://raw.github.com/mcxiaoke/gradle-mvn-push/master/jar.gradle'

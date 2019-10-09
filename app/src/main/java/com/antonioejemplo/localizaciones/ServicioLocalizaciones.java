@@ -43,9 +43,10 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 public class ServicioLocalizaciones extends Service implements LocationListener {
-    //private static final long TIEMPO_MIN = 60 * 1000; //Se mide en milisegundos 60000 msg ==> 1 minuto
-    private static final long TIEMPO_MIN = 900 * 1000; //Un minuto son 6000 milisegundos ==> 15 minutos.900000 milisegundos.
-    private static final long DISTANCIA_MIN = 100; // 100 metros
+    private static final long TIEMPO_MIN = 60 * 1000; //Se mide en milisegundos 60000 msg ==> 1 minuto
+    //private static final long TIEMPO_MIN = 900 * 1000; //Un minuto son 6000 milisegundos ==> 15 minutos.900000 milisegundos.
+    //private static final long DISTANCIA_MIN = 100; // 100 metros
+    private static final long DISTANCIA_MIN = 0; // 0 metros
     private static final String[] A = {"n/d", "preciso", "impreciso"};
     private static final String[] P = {"n/d", "bajo", "medio", "alto"};
     private static final String[] E = {"fuera de servicio",
